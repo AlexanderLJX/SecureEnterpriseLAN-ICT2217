@@ -37,6 +37,7 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.9
 
 
 ## Firewall
+```
 ! Firewall Configuration (Example using Cisco ASA)
 
 interface GigabitEthernet0/0
@@ -94,7 +95,6 @@ route dmz 192.168.5.0 255.255.255.0 192.168.10.9
 ! Allow DMZ to access the internal network if needed
 access-list dmz_to_inside extended permit ip 192.168.5.0 255.255.255.0 192.168.0.0 255.255.255.0
 access-group dmz_to_inside in interface dmz
-
 ```
 
 ## Switch1
