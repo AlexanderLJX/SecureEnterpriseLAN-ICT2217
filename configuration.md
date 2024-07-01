@@ -1,0 +1,86 @@
+
+## Router1
+```
+! Internal Router Configuration
+
+interface GigabitEthernet0/0
+ ip address 192.168.10.2 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ ip address 192.168.10.9 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/2
+ ip address 192.168.10.13 255.255.255.252
+ no shutdown
+
+! Default route to the firewall
+ip route 0.0.0.0 0.0.0.0 192.168.10.1
+```
+
+## Router2 (DMZ)
+```
+! Internal Router Configuration
+
+interface GigabitEthernet0/0
+ ip address 192.168.10.6 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ ip address 192.168.5.1 255.255.255.0
+ no shutdown
+
+! Default route to the firewall
+ip route 0.0.0.0 0.0.0.0 192.168.10.9
+```
+
+
+## Firewall
+```
+! Firewall Configuration (Example using Cisco ASA)
+
+interface GigabitEthernet0/0
+ nameif outside
+ security-level 0
+ ip address 172.27.47.2 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ nameif inside
+ security-level 100
+ ip address 192.168.2.254 255.255.255.0
+ no shutdown
+
+object network obj_any
+ subnet 192.168.0.0 255.255.255.0
+ nat (inside,outside) dynamic interface
+
+! If you have a specific public IP pool, you can configure it as follows
+object network public_pool
+ range 129.126.164.33 129.126.164.38
+ nat (inside,outside) dynamic public_pool
+
+nat (inside,outside) source dynamic obj_any public_pool
+
+
+! Access list to allow traffic from the internal network to the outside
+access-list outside_access_in extended permit ip any any
+
+access-group outside_access_in in interface outside
+
+! Access list for ping traffic
+access-list traffic_out permit icmp any any
+access-list traffic_in permit icmp any any
+
+access-group traffic_out in interface outside
+access-group traffic_in in interface inside
+
+
+
+! Route to the internal network
+route outside 0.0.0.0 0.0.0.0 172.27.47.1
+route inside 192.168.0.0 255.255.255.0 192.168.2.1
+```
+
+## Switch
