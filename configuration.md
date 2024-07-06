@@ -32,7 +32,7 @@ interface GigabitEthernet0/1
  no shutdown
 
 ! Default route to the firewall
-ip route 0.0.0.0 0.0.0.0 192.168.10.9
+ip route 0.0.0.0 0.0.0.0 192.168.10.5
 ```
 
 
@@ -62,16 +62,19 @@ object network obj_any
  subnet 192.168.0.0 255.255.255.0
  nat (inside,outside) dynamic interface
 
-! If you have a specific public IP pool, you can configure it as follows
-object network public_pool
- range 129.126.164.33 129.126.164.38
- nat (inside,outside) dynamic public_pool
+object network public_pool_inside
+ range 129.126.164.32 129.126.164.34
+ nat (inside,outside) dynamic public_pool_inside
 
-nat (inside,outside) source dynamic obj_any public_pool
+nat (inside,outside) source dynamic obj_any public_pool_inside
+
+object network public_pool_dmz
+ range 129.126.164.35 129.126.164.38
+ nat (dmz,outside) dynamic public_pool_dmz
 
 object network dmz_network
  subnet 192.168.5.0 255.255.255.0
- nat (dmz,outside) dynamic interface
+ nat (dmz,outside) dynamic public_pool_dmz
 
 ! Access list to allow traffic from the internal network to the outside
 access-list outside_access_in extended permit ip any any
@@ -89,7 +92,8 @@ access-group traffic_in in interface inside
 
 ! Route to the internal network
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
-route inside 192.168.0.0 255.255.255.0 192.168.10.2
+route inside 192.168.20.0 255.255.255.0 192.168.10.2
+route inside 192.168.30.0 255.255.255.0 192.168.10.2
 route dmz 192.168.5.0 255.255.255.0 192.168.10.9
 
 ! Allow DMZ to access the internal network if needed
