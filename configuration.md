@@ -3,24 +3,12 @@
 ```
 ! Internal Router Configuration
 
-vlan 20
-int vlan 20
-name Lab
-
-vlan 30
-int vlan 30
-name staff
-
-vlan 40
-int vlan 40
-name management
-
 interface GigabitEthernet0/0
 ip address 192.168.10.1 255.255.255.252
 
 interface GigabitEthernet0/1.20
 encapsulation dot1Q 20
-ip address 192.168.20.1 255.255.255.0
+ip address 192.168.20.2 255.255.255.0
 no shut
 exit
 
