@@ -102,7 +102,7 @@ access-group dmz_to_inside in interface dmz
 ```
 
 ## Switch1
-
+```
 Host L3S1
 
 vlan 20
@@ -162,10 +162,11 @@ standby 40 ip 192.168.40.10
 standby 40 priority 100
 standby 40 preempt
 
-
+```
 
 ## Switch2
 
+```
 Host L3S2
 
 vlan 20
@@ -224,3 +225,4 @@ ip address 192.168.40.9 255.255.255.0
 standby 40 ip 192.168.40.10
 standby 40 priority 110
 standby 40 preempt
+```
