@@ -85,24 +85,34 @@ access-list outside_access_in extended permit ip any any
 access-group outside_access_in in interface outside
 
 ! Access list to allow traffic from the DMZ to the outside
+access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
+access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended permit ip any any
 access-group dmz_access_in in interface dmz
 
 ! Access list for ping traffic
 access-list traffic_out permit icmp any any
 access-list traffic_in permit icmp any any
+access-list traffic_dmz permit icmp any any
 access-group traffic_out in interface outside
 access-group traffic_in in interface inside
+access-group traffic_dmz in interface dmz
 
 ! Route to the internal network
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
 route inside 192.168.20.0 255.255.255.0 192.168.10.2
 route inside 192.168.30.0 255.255.255.0 192.168.10.2
-route dmz 192.168.5.0 255.255.255.0 192.168.10.9
+route dmz 192.168.5.0 255.255.255.0 192.168.10.6
 
 ! Allow DMZ to access the internal network if needed
 access-list dmz_to_inside extended permit ip 192.168.5.0 255.255.255.0 192.168.0.0 255.255.255.0
 access-group dmz_to_inside in interface dmz
+
+! Allow for DNS
+dns domain-lookup outside
+dns server-group DefaultDNS
+ name-server 8.8.8.8
+ name-server 8.8.4.4
 ```
 
 ## Switch1
