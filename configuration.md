@@ -3,17 +3,19 @@
 ```
 ! Internal Router Configuration
 
+Host R1
+
 interface GigabitEthernet0/0
- ip address 192.168.10.2 255.255.255.252
- no shutdown
+ip address 192.168.10.2 255.255.255.252
+no shut
 
 interface GigabitEthernet0/1
- ip address 192.168.10.9 255.255.255.252
- no shutdown
+ip address 192.168.10.9 255.255.255.252
+no shut
 
 interface GigabitEthernet0/2
- ip address 192.168.10.13 255.255.255.252
- no shutdown
+ip address 192.168.10.13 255.255.255.252
+no shut
 
 ! Default route to the firewall
 ip route 0.0.0.0 0.0.0.0 192.168.10.1
@@ -22,6 +24,8 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.1
 ## Router2 (DMZ)
 ```
 ! Internal Router Configuration
+
+Host R2
 
 interface GigabitEthernet0/0
  ip address 192.168.10.6 255.255.255.252
@@ -102,5 +106,11 @@ access-group dmz_to_inside in interface dmz
 ```
 
 ## Switch1
+
+Host L3S1
+
+
+
+
 
 ## Switch2
