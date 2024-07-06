@@ -36,7 +36,7 @@ interface GigabitEthernet0/1
  no shutdown
 
 ! Default route to the firewall
-ip route 0.0.0.0 0.0.0.0 192.168.10.5
+ip route 0.0.0.0 0.0.0.0 192.168.10.9
 ```
 
 
@@ -66,19 +66,16 @@ object network obj_any
  subnet 192.168.0.0 255.255.255.0
  nat (inside,outside) dynamic interface
 
-object network public_pool_inside
- range 129.126.164.32 129.126.164.34
- nat (inside,outside) dynamic public_pool_inside
+! If you have a specific public IP pool, you can configure it as follows
+object network public_pool
+ range 129.126.164.33 129.126.164.38
+ nat (inside,outside) dynamic public_pool
 
-nat (inside,outside) source dynamic obj_any public_pool_inside
-
-object network public_pool_dmz
- range 129.126.164.35 129.126.164.38
- nat (dmz,outside) dynamic public_pool_dmz
+nat (inside,outside) source dynamic obj_any public_pool
 
 object network dmz_network
  subnet 192.168.5.0 255.255.255.0
- nat (dmz,outside) dynamic public_pool_dmz
+ nat (dmz,outside) dynamic interface
 
 ! Access list to allow traffic from the internal network to the outside
 access-list outside_access_in extended permit ip any any
@@ -96,8 +93,7 @@ access-group traffic_in in interface inside
 
 ! Route to the internal network
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
-route inside 192.168.20.0 255.255.255.0 192.168.10.2
-route inside 192.168.30.0 255.255.255.0 192.168.10.2
+route inside 192.168.0.0 255.255.255.0 192.168.10.2
 route dmz 192.168.5.0 255.255.255.0 192.168.10.9
 
 ! Allow DMZ to access the internal network if needed
@@ -109,8 +105,122 @@ access-group dmz_to_inside in interface dmz
 
 Host L3S1
 
+vlan 20
+int vlan 20
+des Lab
 
+vlan 30
+int vlan 30
+des staff
+
+vlan 40
+int vlan 40
+des management
+
+
+interface GigabitEthernet1/0/1
+no switchport
+ip address 192.168.10.10 255.255.255.252
+no shutdown
+
+interface range GigabitEthernet1/0/2-21
+shutdown
+
+interface GigabitEthernet1/0/22
+desc Admin Network
+switchport mode trunk
+switchport trunk allowed vlan 40
+no shut
+
+interface GigabitEthernet1/0/23
+desc Staff Network
+switchport mode trunk
+switchport trunk allowed vlan 30
+no shut
+
+interface GigabitEthernet1/0/24
+desc Lab Network
+switchport mode trunk
+switchport trunk allowed vlan 20
+no shut
+
+interface vlan 20
+ip address 192.168.20.8 255.255.255.0
+standby 20 ip 192.168.20.10
+standby 20 priority 110
+standby 20 preempt
+
+interface vlan 30
+ip address 192.168.30.8 255.255.255.0
+standby 30 ip 192.168.30.10
+standby 30 priority 110
+standby 30 preempt
+
+interface vlan 40
+ip address 192.168.40.8 255.255.255.0
+standby 40 ip 192.168.40.10
+standby 40 priority 100
+standby 40 preempt
 
 
 
 ## Switch2
+
+Host L3S2
+
+vlan 20
+int vlan 20
+des Lab
+
+vlan 30
+int vlan 30
+des staff
+
+vlan 40
+int vlan 40
+des management
+
+
+interface GigabitEthernet1/0/1
+no switchport
+ip address 192.168.10.14 255.255.255.252
+no shutdown
+
+interface range GigabitEthernet1/0/2-21
+shutdown
+
+interface GigabitEthernet1/0/22
+desc Admin Network
+switchport mode trunk
+switchport trunk allowed vlan 40
+no shut
+
+interface GigabitEthernet1/0/23
+desc Staff Network
+switchport mode trunk
+switchport trunk allowed vlan 30
+no shut
+
+interface GigabitEthernet1/0/24
+desc Lab Network
+switchport mode trunk
+switchport trunk allowed vlan 20
+no shut
+
+interface vlan 20
+ip address 192.168.20.9 255.255.255.0
+standby 20 ip 192.168.20.10
+standby 20 priority 100
+standby 20 preempt
+
+interface vlan 30
+ip address 192.168.30.9 255.255.255.0
+standby 30 ip 192.168.30.10
+standby 30 priority 100
+standby 30 preempt
+
+interface vlan 40
+ip address 192.168.40.9 255.255.255.0
+standby 40 ip 192.168.40.10
+standby 40 priority 110
+standby 40 preempt
