@@ -240,3 +240,35 @@ standby 40 ip 192.168.40.10
 standby 40 priority 110
 standby 40 preempt
 ```
+
+## Tacacs
+```
+
+enable password faith
+
+aaa new-model
+
+aaa authentication login default group tacacs+
+
+interface Vlan1
+ ip address 192.168.1.3 255.255.255.0
+
+ip default-gateway 192.168.1.1
+ip ssh version 2
+
+tacacs server TACACSVR
+ address ipv4 192.168.1.2
+ key 1
+
+line con 0
+ password hope
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+```
