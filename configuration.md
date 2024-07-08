@@ -199,26 +199,20 @@ standby 40 ip 192.168.40.10
 standby 40 priority 100
 standby 40 preempt
 
-
+router ospf 1
+network 192.168.10.8 0.0.0.3 area 0
+network 192.168.20.0 0.0.0.255 area 0
+network 192.168.30.0 0.0.0.255 area 0
+network 192.168.40.0 0.0.0.255 area 0
 
 ```
 
-## Switch2
+## Switch2 (L3S2) [Layer 3]
 
 ```
 Host L3S2
 
-vlan 20
-int vlan 20
-des Lab
-
-vlan 30
-int vlan 30
-des staff
-
-vlan 40
-int vlan 40
-des management
+ip routing
 
 
 interface GigabitEthernet1/0/1
@@ -232,41 +226,107 @@ shutdown
 interface GigabitEthernet1/0/22
 desc Admin Network
 switchport mode trunk
-switchport trunk allowed vlan 40
 no shut
 
 interface GigabitEthernet1/0/23
 desc Staff Network
 switchport mode trunk
-switchport trunk allowed vlan 30
 no shut
 
 interface GigabitEthernet1/0/24
 desc Lab Network
 switchport mode trunk
-switchport trunk allowed vlan 20
 no shut
 
 interface vlan 20
+des LAB
 ip address 192.168.20.9 255.255.255.0
+ip helper-address 192.168.10.13
+standby version 2
 standby 20 ip 192.168.20.10
 standby 20 priority 100
 standby 20 preempt
 
 interface vlan 30
+des STAFF
 ip address 192.168.30.9 255.255.255.0
+ip helper-address 192.168.10.13
+standby version 2
 standby 30 ip 192.168.30.10
 standby 30 priority 100
 standby 30 preempt
 
 interface vlan 40
+des MGMT
 ip address 192.168.40.9 255.255.255.0
+ip helper-address 192.168.10.13
+standby version 2
 standby 40 ip 192.168.40.10
-standby 40 priority 110
+standby 40 priority 50
 standby 40 preempt
+
+
+router ospf 1
+
+ network 192.168.10.12 0.0.0.3 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+ network 192.168.40.0 0.0.0.255 area 0
+ default-information originate
+
+
+```
+## Switch 3 (L2S3) [Layer 2]
+
+```
+Host L2S3
+
+vlan 40
+des MGMT
+
+int ran f0/1-24
+switchport mode access
+switchport access vlan 40
+no shut
+
+int ran g0/1-2
+no shut
 ```
 
-<<<<<<< Updated upstream
+## Switch 4 (L2S4) [Layer 2]
+
+```
+Host L2S4
+
+vlan 30
+des STAFF
+
+int ran f0/1-24
+switchport mode access
+switchport access vlan 30
+no shut
+
+int ran g0/1-2
+no shut
+```
+
+## Switch 5 (L2S5) [Layer 2]
+
+```
+Host L2S5
+
+vlan 20
+des LAB
+
+int ran f0/1-24
+switchport mode access
+switchport access vlan 20
+no shut
+
+int ran g0/1-2
+no shut
+```
+
 ## Tacacs
 ```
 
@@ -298,29 +358,4 @@ line vty 5 15
  password love
  transport input ssh
 ```
-=======
 
-## Switch 3
-
-```
-Enable
-Conf t
-Host L2S3
-```
-
-## Switch 4
-
-```
-Enable
-Conf t
-Host L2S4
-```
-
-## Switch 5
-
-```
-Enable
-Conf t
-Host L2S4
-```
->>>>>>> Stashed changes
