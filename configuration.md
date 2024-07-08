@@ -284,12 +284,12 @@ Host L2S3
 vlan 40
 des MGMT
 
-int ran f0/1-24
+int ran g1/0/1-22
 switchport mode access
 switchport access vlan 40
 no shut
 
-int ran g0/1-2
+int ran g1/0/23-24
 no shut
 ```
 
