@@ -5,10 +5,6 @@
 
 Host R1
 
-ip dhcp exclude-address 192.168.20.1 192.168.20.10
-ip dhcp exclude-address 192.168.30.1 192.168.30.10
-ip dhcp exclude-address 192.168.40.1 192.168.40.10
-
 ip dhcp pool LAB
  network 192.168.20.0 255.255.255.0
  default-router 192.168.20.10
@@ -22,6 +18,9 @@ ip dhcp pool MGMT
  default-router 192.168.40.10
  dns-server 8.8.8.8
 
+ip dhcp excluded-address 192.168.20.1 192.168.20.10
+ip dhcp excluded-address 192.168.30.1 192.168.30.10
+ip dhcp excluded-address 192.168.40.1 192.168.40.10
 
 interface GigabitEthernet0/0
 ip address 192.168.10.2 255.255.255.252
@@ -282,7 +281,7 @@ router ospf 1
 Host L2S3
 
 vlan 40
-des MGMT
+name MGMT
 
 int ran g1/0/1-22
 switchport mode access
@@ -299,7 +298,7 @@ no shut
 Host L2S4
 
 vlan 30
-des STAFF
+name STAFF
 
 int ran f0/1-24
 switchport mode access
@@ -316,7 +315,7 @@ no shut
 Host L2S5
 
 vlan 20
-des LAB
+name LAB
 
 int ran f0/1-24
 switchport mode access
