@@ -5,6 +5,24 @@
 
 Host R1
 
+ip dhcp exclude-address 192.168.20.1 192.168.20.10
+ip dhcp exclude-address 192.168.30.1 192.168.30.10
+ip dhcp exclude-address 192.168.40.1 192.168.40.10
+
+ip dhcp pool LAB
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.10
+ dns-server 8.8.8.8
+ip dhcp pool STAFF
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.10
+ dns-server 8.8.8.8
+ip dhcp pool MGMT
+ network 192.168.40.0 255.255.255.0
+ default-router 192.168.40.10
+ dns-server 8.8.8.8
+
+
 interface GigabitEthernet0/0
 ip address 192.168.10.2 255.255.255.252
 no shut
@@ -19,6 +37,13 @@ no shut
 
 ! Default route to the firewall
 ip route 0.0.0.0 0.0.0.0 192.168.10.1
+
+
+router ospf 1
+ network 192.168.10.8 0.0.0.3 area 0
+ network 192.168.10.12 0.0.0.3 area 0
+ default-information originate
+
 ```
 
 ## Router2 (DMZ)
@@ -115,22 +140,11 @@ dns server-group DefaultDNS
  name-server 8.8.4.4
 ```
 
-## Switch1
+## Switch1 (L3S1) [Layer 3]
 ```
 Host L3S1
 
-vlan 20
-int vlan 20
-des Lab
-
-vlan 30
-int vlan 30
-des staff
-
-vlan 40
-int vlan 40
-des management
-
+ip routing
 
 interface GigabitEthernet1/0/1
 no switchport
@@ -143,38 +157,49 @@ shutdown
 interface GigabitEthernet1/0/22
 desc Admin Network
 switchport mode trunk
-switchport trunk allowed vlan 40
 no shut
 
 interface GigabitEthernet1/0/23
 desc Staff Network
 switchport mode trunk
-switchport trunk allowed vlan 30
 no shut
 
 interface GigabitEthernet1/0/24
 desc Lab Network
 switchport mode trunk
-switchport trunk allowed vlan 20
 no shut
 
+vlan 20
 interface vlan 20
+des LAB
 ip address 192.168.20.8 255.255.255.0
+ip helper-address 192.168.10.9
+standby version 2
 standby 20 ip 192.168.20.10
-standby 20 priority 110
+standby 20 priority 50
 standby 20 preempt
 
+vlan 30
 interface vlan 30
+des STAFF
 ip address 192.168.30.8 255.255.255.0
+ip helper-address 192.168.10.9
+standby version 2
 standby 30 ip 192.168.30.10
-standby 30 priority 110
+standby 30 priority 50
 standby 30 preempt
 
+vlan 40
 interface vlan 40
+des MGMT
 ip address 192.168.40.8 255.255.255.0
+ip helper-address 192.168.10.9
+standby version 2
 standby 40 ip 192.168.40.10
 standby 40 priority 100
 standby 40 preempt
+
+
 
 ```
 
@@ -241,6 +266,7 @@ standby 40 priority 110
 standby 40 preempt
 ```
 
+<<<<<<< Updated upstream
 ## Tacacs
 ```
 
@@ -272,3 +298,29 @@ line vty 5 15
  password love
  transport input ssh
 ```
+=======
+
+## Switch 3
+
+```
+Enable
+Conf t
+Host L2S3
+```
+
+## Switch 4
+
+```
+Enable
+Conf t
+Host L2S4
+```
+
+## Switch 5
+
+```
+Enable
+Conf t
+Host L2S4
+```
+>>>>>>> Stashed changes
