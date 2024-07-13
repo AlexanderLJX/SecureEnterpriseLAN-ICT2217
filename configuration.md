@@ -87,7 +87,7 @@ interface GigabitEthernet0/2
  no shutdown
 
 object network obj_any
- subnet 192.168.0.0 255.255.255.0
+ subnet 192.168.0.0 255.255.0.0
  nat (inside,outside) dynamic interface
 
 object network public_pool_inside
@@ -113,6 +113,11 @@ access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
 access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended permit ip any any
 access-group dmz_access_in in interface dmz
+!
+access-list out_access_in extended permit udp any host 8.8.8.8 eq 53
+access-list out_access_in extended deny udp any any eq 53
+access-list out_access_in extended permit ip any any
+access-group out_access_in in interface inside
 
 ! Access list for ping traffic
 access-list traffic_out permit icmp any any
@@ -126,6 +131,7 @@ access-group traffic_dmz in interface dmz
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
 route inside 192.168.20.0 255.255.255.0 192.168.10.2
 route inside 192.168.30.0 255.255.255.0 192.168.10.2
+route inside 192.168.40.0 255.255.255.0 192.168.10.2
 route dmz 192.168.5.0 255.255.255.0 192.168.10.6
 
 ! Allow DMZ to access the internal network if needed
