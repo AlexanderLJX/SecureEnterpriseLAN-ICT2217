@@ -157,7 +157,7 @@ ip address 192.168.10.10 255.255.255.252
 no shutdown
 
 interface GigabitEthernet1/0/21
-switchport mode acess
+switchport mode access
 switchport access vlan 100
 no shut
 
