@@ -334,9 +334,21 @@ Host L2S4
 vlan 30
 name STAFF
 
-int ran f0/1-24
+vlan 40
+name MGMT
+
+vlan 100
+name Mgmt-intf
+ip addr 192.168.100.248 255.255.255.240
+
+int ran f0/1-12
 switchport mode access
 switchport access vlan 30
+no shut
+
+int ran f0/13-24
+switchport mode access
+switchport access vlan 40
 no shut
 
 int ran g0/1-2
@@ -350,6 +362,10 @@ Host L2S5
 
 vlan 20
 name LAB
+
+vlan 100
+name Mgmt-intf
+ip addr 192.168.100.249
 
 int ran f0/1-24
 switchport mode access
