@@ -86,6 +86,23 @@ interface GigabitEthernet0/2
  ip address 192.168.10.5 255.255.255.252
  no shutdown
 
+vrf definition Mgmt-intf
+ address-family ipv4
+
+interface GigabitEthernet0/3
+ nameif management
+ security-level 100
+ ip address 192.168.100.241 255.255.255.0
+ no shutdown
+ vrf forwarding Mgmt-intf
+
+! Add Routes in the Management VRF
+ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.244
+
+! Access List for Management VRF
+access-list management_access_in extended permit ip any any
+access-group management_access_in in interface management
+
 object network obj_any
  subnet 192.168.0.0 255.255.0.0
  nat (inside,outside) dynamic interface
@@ -504,3 +521,9 @@ int ran g0/1-2
 no shut
 ```
 
+vrf definition Mgmt-intf
+address-family ipv4
+
+int <port>
+vrf forwarding Mgmt-intf
+ip addr 192.168.100.<> 255.255.255.240
