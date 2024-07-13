@@ -336,7 +336,7 @@ enable password faith
 username wendell password 0 odom
 aaa new-model
 
-aaa authentication login default group tacacs+
+aaa authentication login default group tacacs+ local
 
 ip routing
 
