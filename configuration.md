@@ -156,8 +156,17 @@ no switchport
 ip address 192.168.10.10 255.255.255.252
 no shutdown
 
-interface range GigabitEthernet1/0/2-21
+interface GigabitEthernet1/0/21
+switchport mode acess
+switchport access vlan 100
+no shut
+
+interface range GigabitEthernet1/0/3-20
 shutdown
+
+interface GigabitEthernet1/0/2
+switchport mode trunk
+no shut
 
 interface GigabitEthernet1/0/22
 desc Admin Network
@@ -204,6 +213,11 @@ standby 40 ip 192.168.40.10
 standby 40 priority 100
 standby 40 preempt
 
+vlan 100
+interface vlan 100
+des Mgmt-intf
+ip address 192.168.100.245 255.255.255.0
+
 router ospf 1
 network 192.168.10.8 0.0.0.3 area 0
 network 192.168.20.0 0.0.0.255 area 0
@@ -225,11 +239,20 @@ no switchport
 ip address 192.168.10.14 255.255.255.252
 no shutdown
 
-interface range GigabitEthernet1/0/2-21
+interface range GigabitEthernet1/0/3-20
 shutdown
+
+interface GigabitEthernet1/0/21
+switchport mode access
+switchport access vlan 100
+no shut
 
 interface GigabitEthernet1/0/22
 desc Admin Network
+switchport mode trunk
+no shut
+
+interface GigabitEthernet1/0/2
 switchport mode trunk
 no shut
 
@@ -269,6 +292,11 @@ standby version 2
 standby 40 ip 192.168.40.10
 standby 40 priority 50
 standby 40 preempt
+
+vlan 100
+interface vlan 100
+des Mgmt-intf
+ip address 192.168.100.246 255.255.255.0
 
 
 router ospf 1
