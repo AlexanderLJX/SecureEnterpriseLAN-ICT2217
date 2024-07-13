@@ -338,6 +338,7 @@ vlan 40
 name MGMT
 
 vlan 100
+interface vlan 100
 name Mgmt-intf
 ip addr 192.168.100.248 255.255.255.240
 
@@ -364,6 +365,7 @@ vlan 20
 name LAB
 
 vlan 100
+interface vlan 100
 name Mgmt-intf
 ip addr 192.168.100.249
 
