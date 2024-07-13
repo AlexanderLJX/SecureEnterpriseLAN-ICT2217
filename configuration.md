@@ -312,18 +312,144 @@ router ospf 1
 ## Switch 3 (L2S3) [Layer 2]
 
 ```
-Host L2S3
+hostname L2S3
 
-vlan 40
-name MGMT
+enable password faith
 
-int ran g1/0/1-22
-switchport mode access
-switchport access vlan 40
-no shut
+username wendell password 0 odom
+aaa new-model
 
-int ran g1/0/23-24
-no shut
+aaa authentication login default group tacacs+
+
+ip routing
+
+ip domain-name grp7
+
+
+interface FastEthernet0
+ no ip address
+ no ip route-cache
+
+interface GigabitEthernet1/0/1
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/2
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/3
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/4
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/5
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/6
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/7
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/8
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/9
+ shutdown
+
+interface GigabitEthernet1/0/10
+ shutdown
+
+interface GigabitEthernet1/0/11
+ shutdown
+
+interface GigabitEthernet1/0/12
+ shutdown
+
+interface GigabitEthernet1/0/13
+ shutdown
+
+interface GigabitEthernet1/0/14
+ shutdown
+
+interface GigabitEthernet1/0/15
+ shutdown
+
+interface GigabitEthernet1/0/16
+ shutdown
+
+interface GigabitEthernet1/0/17
+ shutdown
+
+interface GigabitEthernet1/0/18
+ shutdown
+
+interface GigabitEthernet1/0/19
+ shutdown
+
+interface GigabitEthernet1/0/20
+ shutdown
+
+interface GigabitEthernet1/0/21
+ shutdown
+
+interface GigabitEthernet1/0/22
+ shutdown
+
+interface GigabitEthernet1/0/23
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/24
+ switchport access vlan 100
+ switchport mode access
+
+interface GigabitEthernet1/0/25
+ shutdown
+
+interface GigabitEthernet1/0/26
+ shutdown
+
+interface GigabitEthernet1/0/27
+ shutdown
+
+interface GigabitEthernet1/0/28
+ shutdown
+
+interface Vlan1
+ no ip address
+
+interface Vlan100
+ ip address 192.168.100.247 255.255.255.240
+
+ip default-gateway 192.168.100.241
+ip http server
+ip http secure-server
+
+ip ssh version 2
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.253
+ key 1
+
+line con 0
+ password hope
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+
+
 ```
 
 ## Switch 4 (L2S4) [Layer 2]
@@ -376,37 +502,5 @@ no shut
 
 int ran g0/1-2
 no shut
-```
-
-## Tacacs
-```
-
-enable password faith
-
-aaa new-model
-
-aaa authentication login default group tacacs+
-
-interface Vlan1
- ip address 192.168.1.3 255.255.255.0
-
-ip default-gateway 192.168.1.1
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.1.2
- key 1
-
-line con 0
- password hope
- stopbits 1
-line aux 0
- stopbits 1
-line vty 0 4
- password love
- transport input ssh
-line vty 5 15
- password love
- transport input ssh
 ```
 
