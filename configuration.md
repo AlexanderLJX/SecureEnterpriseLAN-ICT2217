@@ -86,15 +86,11 @@ interface GigabitEthernet0/2
  ip address 192.168.10.5 255.255.255.252
  no shutdown
 
-vrf definition Mgmt-intf
- address-family ipv4
-
 interface GigabitEthernet0/3
  nameif management
  security-level 100
  ip address 192.168.100.241 255.255.255.0
  no shutdown
- vrf forwarding Mgmt-intf
 
 ! Add Routes in the Management VRF
 ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.244
