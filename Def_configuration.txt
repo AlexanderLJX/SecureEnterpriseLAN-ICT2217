@@ -1,0 +1,33 @@
+DHCP Defense <put on R1 g0/0>
+1. DHCP Snooping
+ip dhcp snooping
+ip dhcp snooping vlan vlan-id [vlan-id]
+ip dhcp snooping verify mac-address (optional)
+interface [type number]
+ip dhcp snooping limit rate [rate]
+interface [type number]
+ip dhcp snooping trust
+<dhcp router to trust dhcp messages>
+ip dhcp relay information trust-all (optional)
+or
+ip dhcp relat information trusted (optional)
+show ip dhcp snooping 
+
+SWITCH Defense < L3S1, L3S2, SW3, SW4, SW5>
+1. switch spoofing
+< to prevent switch spoofing attack, disable DTP negotiations >
+interface fa0/1
+switchport mode access
+switchport access vlan 10
+switchport nonegotiate
+
+2. defend against double tagging
+switchport trunk native Vlan 500
+vlan dot1q tag native
+
+3. switchport security 
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation restrict
+switchport port-security mac-address sticky
+
