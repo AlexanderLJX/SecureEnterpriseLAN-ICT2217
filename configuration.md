@@ -87,17 +87,10 @@ interface GigabitEthernet0/2
  no shutdown
 
 interface GigabitEthernet0/3
- nameif management
+ nameif jumphost
  security-level 100
- ip address 192.168.100.241 255.255.255.0
+ ip address 192.168.3.1 255.255.255.252
  no shutdown
-
-! Add Routes in the Management VRF
-ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.244
-
-! Access List for Management VRF
-access-list management_access_in extended permit ip any any
-access-group management_access_in in interface management
 
 object network obj_any
  subnet 192.168.0.0 255.255.0.0
@@ -110,16 +103,36 @@ object network public_pool_inside
 nat (inside,outside) source dynamic obj_any public_pool_inside
 
 object network public_pool_dmz
- range 129.126.164.35 129.126.164.38
+ range 129.126.164.35 129.126.164.37
  nat (dmz,outside) dynamic public_pool_dmz
 
 object network dmz_network
  subnet 192.168.5.0 255.255.255.0
  nat (dmz,outside) dynamic public_pool_dmz
 
+! Static NAT for jumphost
+! object network JUMPHOST_OUTSIDE_NAT
+!  host 192.168.3.2
+!  nat (jumphost,outside) static 129.126.164.38
+
+object network JUMPHOST
+ host 192.168.3.2
+
+nat (jumphost,outside) static interface service tcp 2222 22
+
+
 ! Access list to allow traffic from the internal network to the outside
+! access-list outside_access_in extended permit tcp any host 129.126.164.38 eq ssh
+! access-list outside_access_in extended permit icmp any host 129.126.164.38
+access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
 access-list outside_access_in extended permit ip any any
 access-group outside_access_in in interface outside
+
+! Access list for jumphost interface
+! access-list jumphost_access_in extended permit tcp any host 192.168.3.2 eq ssh
+! access-list jumphost_access_in extended permit ip 192.168.3.0 255.255.255.252 any
+! access-list jumphost_access_in extended deny ip any any log
+! access-group jumphost_access_in in interface jumphost
 
 ! Access list to allow traffic from the DMZ to the outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
@@ -136,9 +149,11 @@ access-group out_access_in in interface inside
 access-list traffic_out permit icmp any any
 access-list traffic_in permit icmp any any
 access-list traffic_dmz permit icmp any any
+access-list traffic_jumphost permit icmp any any
 access-group traffic_out in interface outside
 access-group traffic_in in interface inside
 access-group traffic_dmz in interface dmz
+access-group traffic_jumphost in interface jumphost
 
 ! Route to the internal network
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
