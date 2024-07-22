@@ -457,14 +457,14 @@ interface Vlan1
 interface Vlan100
  ip address 192.168.100.247 255.255.255.240
 
-ip default-gateway 192.168.100.241
+ip default-gateway 192.168.100.217
 ip http server
 ip http secure-server
 
 ip ssh version 2
 
 tacacs server TACACSVR
- address ipv4 192.168.100.253
+ address ipv4 192.168.100.218
  key 1
 
 line con 0
