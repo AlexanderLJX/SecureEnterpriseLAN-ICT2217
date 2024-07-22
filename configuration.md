@@ -5,11 +5,50 @@ route add 0.0.0.0 mask 0.0.0.0 192.168.3.1 metric 1 if 13
 ```
 ! `route print` to view interface number
 
-## Router1
+## Router3
 ```
 ! Internal Router Configuration
 
-Host R1
+Host R3
+
+vrf definition Mgmt-intf
+ description Management VRF
+ rd 1:1
+ !
+ address-family ipv4
+ exit-address-family
+
+interface GigabitEthernet0
+ description Management Interface
+ vrf forwarding Mgmt-intf
+ ip address 192.168.100.230 255.255.255.252
+ no shutdown
+
+ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.229
+
+username wendell password 0 odom
+
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local if-authenticated
+aaa accounting exec default start-stop group tacacs+
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
+
+line con 0
+ password hope
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+ 
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 ip dhcp pool LAB
  network 192.168.20.0 255.255.255.0
@@ -28,15 +67,15 @@ ip dhcp excluded-address 192.168.20.1 192.168.20.10
 ip dhcp excluded-address 192.168.30.1 192.168.30.10
 ip dhcp excluded-address 192.168.40.1 192.168.40.10
 
-interface GigabitEthernet0/0
+interface GigabitEthernet0/1/0
 ip address 192.168.10.2 255.255.255.252
 no shut
 
-interface GigabitEthernet0/1
+interface GigabitEthernet0/0/0
 ip address 192.168.10.9 255.255.255.252
 no shut
 
-interface GigabitEthernet0/2
+interface GigabitEthernet0/0/1
 ip address 192.168.10.13 255.255.255.252
 no shut
 
@@ -191,6 +230,13 @@ vrf definition MGMT
  address-family ipv4
  exit-address-family
 
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ ip address 192.168.100.234 255.255.255.252
+ no shutdown
+
+ip route vrf MGMT 0.0.0.0 0.0.0.0 192.168.100.233
+
 interface GigabitEthernet1/0/1
 no switchport
 ip address 192.168.10.10 255.255.255.252
@@ -245,7 +291,7 @@ interface GigabitEthernet1/0/15
 
 interface GigabitEthernet1/0/16
  no switchport
- description Connection to S1
+ description Connection to S1 (Itself)
  vrf forwarding MGMT
  ip address 192.168.100.233 255.255.255.252
  no shutdown
@@ -342,6 +388,12 @@ Host L3S2
 
 ip routing
 
+vrf definition MGMT
+ description Management VRF
+ rd 1:1
+ !
+ address-family ipv4
+ exit-address-family
 
 interface GigabitEthernet1/0/1
 no switchport
@@ -428,6 +480,8 @@ enable password faith
 username wendell password 0 odom
 aaa new-model
 aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local if-authenticated
+aaa accounting exec default start-stop group tacacs+
 
 
 interface FastEthernet0
