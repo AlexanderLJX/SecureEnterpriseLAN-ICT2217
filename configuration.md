@@ -427,90 +427,18 @@ enable password faith
 
 username wendell password 0 odom
 aaa new-model
-
 aaa authentication login default group tacacs+ local
-
-ip domain-name grp7
 
 
 interface FastEthernet0
  no ip address
  no ip route-cache
 
-interface GigabitEthernet1/0/1
+interface range GigabitEthernet1/0/1-13
  switchport access vlan 20
  switchport mode access
 
-interface GigabitEthernet1/0/2
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/3
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/4
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/5
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/6
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/7
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/8
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/9
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/10
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/11
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/12
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/13
- switchport access vlan 20
- switchport mode access
-
-interface GigabitEthernet1/0/14
- shutdown
-
-interface GigabitEthernet1/0/15
- shutdown
-
-interface GigabitEthernet1/0/16
- shutdown
-
-interface GigabitEthernet1/0/17
- shutdown
-
-interface GigabitEthernet1/0/18
- shutdown
-
-interface GigabitEthernet1/0/19
- shutdown
-
-interface GigabitEthernet1/0/20
- shutdown
-
-interface GigabitEthernet1/0/21
+interface range GigabitEthernet1/0/14-21
  shutdown
 
 interface GigabitEthernet1/0/22
@@ -519,30 +447,16 @@ interface GigabitEthernet1/0/22
  switchport access vlan 100
  no shutdown
 
-interface GigabitEthernet1/0/23
- shutdown
-
-interface GigabitEthernet1/0/24
- shutdown
-
-interface GigabitEthernet1/0/25
- shutdown
-
-interface GigabitEthernet1/0/26
- shutdown
-
-interface GigabitEthernet1/0/27
- shutdown
-
-interface GigabitEthernet1/0/28
+interface range GigabitEthernet1/0/23-28
  shutdown
 
 interface Vlan1
  no ip address
 
-interface Vlan20
- description lab room 1
+vlan 20
+name LAB
 
+vlan 100
 interface Vlan100
  description Management Interface
  ip address 192.168.100.242 255.255.255.252
@@ -572,7 +486,93 @@ line vty 5 15
 ## Switch 4 (L2S4) [Layer 2]
 
 ```
-Host L2S4
+hostname L2S4
+
+enable password faith
+
+username wendell password 0 odom
+aaa new-model
+
+aaa authentication login default group tacacs+ local
+
+interface range FastEthernet0/1-13
+ switchport access vlan 20
+ switchport mode access
+
+interface range FastEthernet0/14-23
+ shutdown
+
+interface FastEthernet0/24
+ description Uplink to S1
+ switchport mode access
+ switchport access vlan 100
+ no shutdown
+
+int ran g0/1-2
+shutdown
+
+interface Vlan1
+ no ip address
+
+vlan 20
+ name LAB
+
+vlan 100
+interface Vlan100
+ description Management Interface
+ ip address 192.168.100.246 255.255.255.252
+ no shut
+
+ip default-gateway 192.168.100.245
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
+
+line con 0
+ password hope
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+
+```
+
+## Switch 5 (L2S5) [Layer 2]
+
+```
+Host L2S5
+
+enable password faith
+
+username wendell password 0 odom
+aaa new-model
+
+aaa authentication login default group tacacs+ local
+
+int ran f0/1-12
+switchport mode access
+switchport access vlan 30
+no shut
+
+int ran f0/13-23
+switchport mode access
+switchport access vlan 40
+no shut
+
+interface FastEthernet0/24
+ description Uplink to S1
+ switchport mode access
+ switchport access vlan 100
+ no shutdown
+
+int ran g0/1-2
+shutdown
 
 vlan 30
 name STAFF
@@ -582,51 +582,29 @@ name MGMT
 
 vlan 100
 interface vlan 100
-name Mgmt-intf
-ip addr 192.168.100.248 255.255.255.240
+ description Management Interface
+ ip addr 192.168.100.250 255.255.255.252
+ no shutdown
 
-int ran f0/1-12
-switchport mode access
-switchport access vlan 30
-no shut
+ip default-gateway 192.168.100.249
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
-int ran f0/13-24
-switchport mode access
-switchport access vlan 40
-no shut
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
 
-int ran g0/1-2
-no shut
+line con 0
+ password hope
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+
 ```
-
-## Switch 5 (L2S5) [Layer 2]
-
-```
-Host L2S5
-
-vlan 20
-name LAB
-
-vlan 100
-interface vlan 100
-name Mgmt-intf
-ip addr 192.168.100.249
-
-int ran f0/1-24
-switchport mode access
-switchport access vlan 20
-no shut
-
-int ran g0/1-2
-no shut
-```
-
-vrf definition Mgmt-intf
-address-family ipv4
-
-int <port>
-vrf forwarding Mgmt-intf
-ip addr 192.168.100.<> 255.255.255.240
 
 ## AAA
 
