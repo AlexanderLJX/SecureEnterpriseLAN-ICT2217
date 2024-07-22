@@ -538,3 +538,80 @@ address-family ipv4
 int <port>
 vrf forwarding Mgmt-intf
 ip addr 192.168.100.<> 255.255.255.240
+```
+
+## AAA
+```
+Authentication
+
+aaa authentication login default group tacacs+ group radius local
+
+Authorization
+
+aaa authorization exec default group tacacs+ group radius local
+
+Accounting
+
+aaa accounting exec default start-stop group tacacs+ group radius
+aaa accounting commands all default start-stop group tacacs+
+
+
+User - manager
+Support - instructors, staff and admin staff
+JR-Admin - network manager
+Admin - network administrator
+
+local
+username USER privilege 1 secret cisco
+privilege exec level 5 ping
+username SUPPORT privilege 5 secret cisco5
+privilege exec level 10 reload
+username JR-ADMIN privilege 10 secret cisco10
+username ADMIN privilege 15 secret cisco123
+
+parser view SHOWVIEW
+secret cisco
+commands exec include show version
+exit
+
+parser view VERIFYVIEW
+secret cisco5
+commands exec include ping
+exit
+
+parser view RELOADVIEW
+secret cisco10
+commands exec include reload
+exit
+
+parser view CONFIGVIEW
+secret cisco15
+commands exec include configure terminal
+commands configure include interface
+
+parser view USER superview
+secret cisco
+view SHOWVIEW
+exit
+
+parser view SUPPORT superview
+secret cisco1
+view SHOWVIEW
+view VERIFYVIEW
+exit
+
+parser view JR-ADMIN superview
+secret cisco2
+view SHOWVIEW
+view VERIFYVIEW
+view RELOADVIEW
+exit
+
+parser view ADMIN superview
+secret cisco3
+view SHOWVIEW
+view VERIFYVIEW
+view RELOADVIEW
+view CONFIGVIEW
+exit
+```
