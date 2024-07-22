@@ -709,6 +709,7 @@ parser view CONFIGVIEW
 secret cisco15
 commands exec include configure terminal
 commands configure include interface
+exit
 
 parser view USER superview
 secret cisco
