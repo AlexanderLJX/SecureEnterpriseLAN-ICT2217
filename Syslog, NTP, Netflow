@@ -1,0 +1,118 @@
+IP are subjected to CHANGES
+< SYSLOG server, IP:192.168.100.253 >
+
+Set up a Syslog server.
+Configure Syslog settings on all network devices to send logs to the Syslog server.
+
+! Enter global configuration mode
+Router(config)# logging 192.168.100.254
+
+! Set the logging severity level (0-7, where 0 is emergencies and 7 is debugging)
+Router(config)# logging trap informational
+
+! Include timestamps in log messages
+Router(config)# service timestamps log datetime msec
+
+! Enable logging on the console and monitor sessions
+Router(config)# logging console informational
+Router(config)# logging monitor informational
+
+! (Optional) Set the source interface for Syslog messages
+Router(config)# logging source-interface GigabitEthernet0/1
+
+[Router]
+Router(config)# logging 192.168.100.254
+Router(config)# logging trap informational
+Router(config)# service timestamps log datetime msec
+Router(config)# logging source-interface GigabitEthernet0/1
+
+[ L3 Switch ]
+! Enter global configuration mode
+L3Switch(config)# logging 192.168.100.254
+L3Switch(config)# logging trap informational
+L3Switch(config)# service timestamps log datetime msec
+L3Switch(config)# logging source-interface Vlan1
+
+[ L2 Switch ]
+! Enter global configuration mode
+L2Switch(config)# logging 192.168.100.254
+L2Switch(config)# logging trap informational
+L2Switch(config)# service timestamps log datetime msec
+L2Switch(config)# logging source-interface Vlan1
+
+< NTP >
+
+Set up an NTP server or choose a reliable public NTP server.
+Configure NTP settings on all network devices to synchronize time with the NTP server.
+
+! Enter global configuration mode
+Router(config)# ntp server 192.168.100.254
+
+! (Optional) Specify the source interface for NTP messages
+Router(config)# ntp source GigabitEthernet0/1
+
+! (Optional) Set NTP authentication (if your NTP server supports it)
+Router(config)# ntp authenticate
+Router(config)# ntp authentication-key 1 md5 YOUR_NTP_KEY
+Router(config)# ntp trusted-key 1
+Router(config)# ntp server 192.168.100.254 key 1
+
+[ Router ]
+
+Router(config)# ntp server 192.168.100.254
+Router(config)# ntp source GigabitEthernet0/1
+
+[ L3 Switch ]
+! Enter global configuration mode
+L3Switch(config)# ntp server 192.168.100.254
+L3Switch(config)# ntp source Vlan1
+
+[ L2 Switch ]
+! Enter global configuration mode
+L2Switch(config)# ntp server 192.168.100.254
+L2Switch(config)# ntp source Vlan1
+
+< NETFLOW >
+
+Set up a NetFlow collector.
+Configure NetFlow settings on all network devices to export flow data to the NetFlow collector.
+
+! Enter global configuration mode
+Router(config)# ip flow-export destination 192.168.100.254 9996
+
+! Configure the source interface for NetFlow data
+Router(config)# ip flow-export source GigabitEthernet0/1
+
+! Set the version of NetFlow (NetFlow v9 is recommended)
+Router(config)# ip flow-export version 9
+
+! Enable NetFlow on interfaces
+Router(config)# interface GigabitEthernet0/1
+Router(config-if)# ip flow ingress
+Router(config-if)# ip flow egress
+
+! (Optional) Configure flow sampling to reduce load
+Router(config)# ip flow-sampling-mode deterministic M out-of-N
+Router(config)# ip flow-sampling-mode random 1 out-of-100
+
+[ Router ]
+Router(config)# ip flow-export destination 192.168.100.254 9996
+Router(config)# ip flow-export source GigabitEthernet0/1
+Router(config)# ip flow-export version 9
+Router(config)# interface GigabitEthernet0/1
+
+[ L3 Switch ]
+! Enter global configuration mode
+L3Switch(config)# ip flow-export destination 192.168.100.254 9996
+L3Switch(config)# ip flow-export source Vlan1
+L3Switch(config)# ip flow-export version 9
+
+! Enable NetFlow on relevant interfaces
+L3Switch(config)# interface GigabitEthernet1/0
+L3Switch(config-if)# ip flow ingress
+L3Switch(config-if)# ip flow egress
+
+L3Switch(config)# interface GigabitEthernet1/1
+L3Switch(config-if)# ip flow ingress
+L3Switch(config-if)# ip flow egress
+
