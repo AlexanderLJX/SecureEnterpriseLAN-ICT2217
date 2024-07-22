@@ -1,3 +1,9 @@
+## JumpHost
+```
+route add 192.168.100.0 mask 255.255.255.0 192.168.100.253 metric 1 if 49
+route add 0.0.0.0 mask 0.0.0.0 192.168.3.1 metric 1 if 13
+```
+! `route print` to view interface number
 
 ## Router1
 ```
@@ -178,6 +184,13 @@ Host L3S1
 
 ip routing
 
+vrf definition MGMT
+ description Management VRF
+ rd 1:1
+ !
+ address-family ipv4
+ exit-address-family
+
 interface GigabitEthernet1/0/1
 no switchport
 ip address 192.168.10.10 255.255.255.252
@@ -194,6 +207,76 @@ shutdown
 interface GigabitEthernet1/0/2
 switchport mode trunk
 no shut
+
+interface GigabitEthernet1/0/11
+ no switchport
+ description Connection to Jump Host
+ vrf forwarding MGMT
+ ip address 192.168.100.253 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/12
+ no switchport
+ description Connection to TACACS
+ vrf forwarding MGMT
+ ip address 192.168.100.217 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/13
+ no switchport
+ description Connection to Firewall
+ vrf forwarding MGMT
+ ip address 192.168.100.221 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/14
+ no switchport
+ description Connection to R2
+ vrf forwarding MGMT
+ ip address 192.168.100.224 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/15
+ no switchport
+ description Connection to R3
+ vrf forwarding MGMT
+ ip address 192.168.100.229 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/16
+ no switchport
+ description Connection to S1
+ vrf forwarding MGMT
+ ip address 192.168.100.233 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/17
+ no switchport
+ description Connection to S2
+ vrf forwarding MGMT
+ ip address 192.168.100.237 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/18
+ no switchport
+ description Connection to S3
+ vrf forwarding MGMT
+ ip address 192.168.100.241 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/19
+ no switchport
+ description Connection to S4
+ vrf forwarding MGMT
+ ip address 192.168.100.245 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet1/0/20
+ no switchport
+ description Connection to S5
+ vrf forwarding MGMT
+ ip address 192.168.100.249 255.255.255.252
+ no shutdown
 
 interface GigabitEthernet1/0/22
 desc Admin Network
