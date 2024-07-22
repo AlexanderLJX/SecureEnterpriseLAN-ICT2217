@@ -326,7 +326,6 @@ standby 40 preempt
 vlan 100
 interface vlan 100
 des Mgmt-intf
-ip address 192.168.100.245 255.255.255.0
 
 router ospf 1
 network 192.168.10.8 0.0.0.3 area 0
@@ -431,8 +430,6 @@ aaa new-model
 
 aaa authentication login default group tacacs+ local
 
-ip routing
-
 ip domain-name grp7
 
 
@@ -441,51 +438,56 @@ interface FastEthernet0
  no ip route-cache
 
 interface GigabitEthernet1/0/1
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/2
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/3
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/4
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/5
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/6
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/7
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/8
- switchport access vlan 100
+ switchport access vlan 20
  switchport mode access
 
 interface GigabitEthernet1/0/9
- shutdown
+ switchport access vlan 20
+ switchport mode access
 
 interface GigabitEthernet1/0/10
- shutdown
+ switchport access vlan 20
+ switchport mode access
 
 interface GigabitEthernet1/0/11
- shutdown
+ switchport access vlan 20
+ switchport mode access
 
 interface GigabitEthernet1/0/12
- shutdown
+ switchport access vlan 20
+ switchport mode access
 
 interface GigabitEthernet1/0/13
- shutdown
+ switchport access vlan 20
+ switchport mode access
 
 interface GigabitEthernet1/0/14
  shutdown
@@ -512,15 +514,16 @@ interface GigabitEthernet1/0/21
  shutdown
 
 interface GigabitEthernet1/0/22
- shutdown
+ description Uplink to S1
+ switchport mode access
+ switchport access vlan 100
+ no shutdown
 
 interface GigabitEthernet1/0/23
- switchport access vlan 100
- switchport mode access
+ shutdown
 
 interface GigabitEthernet1/0/24
- switchport access vlan 100
- switchport mode access
+ shutdown
 
 interface GigabitEthernet1/0/25
  shutdown
@@ -537,13 +540,17 @@ interface GigabitEthernet1/0/28
 interface Vlan1
  no ip address
 
+interface Vlan20
+ description lab room 1
+
 interface Vlan100
- ip address 192.168.100.247 255.255.255.240
+ description Management Interface
+ ip address 192.168.100.242 255.255.255.252
+ no shut
 
-ip default-gateway 192.168.100.217
-ip http server
-ip http secure-server
-
+ip default-gateway 192.168.100.241
+ip domain-name example.com
+crypto key generate rsa modulus 2048
 ip ssh version 2
 
 tacacs server TACACSVR
