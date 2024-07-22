@@ -117,8 +117,7 @@ object network dmz_network
 
 object network JUMPHOST
  host 192.168.3.2
-
-nat (jumphost,outside) static interface service tcp 2222 22
+ nat (jumphost,outside) static interface service tcp 22 22
 
 
 ! Access list to allow traffic from the internal network to the outside
