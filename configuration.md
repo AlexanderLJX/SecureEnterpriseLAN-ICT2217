@@ -38,27 +38,28 @@ interface GigabitEthernet0
 
 ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.229
 
-username wendell password 0 odom
+username wendell password odom
+enable password faith
 
 aaa new-model
 aaa authentication login default group tacacs+ local
-aaa authorization exec default group tacacs+ local if-authenticated
-aaa accounting exec default start-stop group tacacs+
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
- key 1
+ key grp7
 
-line con 0
- password hope
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+
 line vty 0 4
- password love
  transport input ssh
 line vty 5 15
- password love
  transport input ssh
  
-ip domain-name example.com
+ip domain-name grp7
 crypto key generate rsa modulus 2048
 ip ssh version 2
 
@@ -133,27 +134,28 @@ interface GigabitEthernet0/2
 
 ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.225
 
-username wendell password 0 odom
+username wendell password odom
+enable password faith
 
 aaa new-model
 aaa authentication login default group tacacs+ local
-aaa authorization exec default group tacacs+ local if-authenticated
-aaa accounting exec default start-stop group tacacs+
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
- key 1
+ key grp7
 
-line con 0
- password hope
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+
 line vty 0 4
- password love
  transport input ssh
 line vty 5 15
- password love
  transport input ssh
  
-ip domain-name example.com
+ip domain-name grp7
 crypto key generate rsa modulus 2048
 ip ssh version 2
 
@@ -326,15 +328,30 @@ clock timezone SGT 8
 
 ip routing
 
+username wendell password odom
 enable password faith
+
+aaa new-model
+aaa authentication login default group tacacs+ local
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key grp7
 
 username manager secret Manager!
 username instructor secret Instructor!
 username staff secret Staff!
 username networkManager secret NetworkManager!
 username networkAdmin secret NetworkAdmin!
-aaa new-model
-aaa authentication login default group tacacs+ local
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+ 
+ip domain-name grp7
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 vrf definition MGMT
  description Management VRF
@@ -492,18 +509,6 @@ network 192.168.20.0 0.0.0.255 area 0
 network 192.168.30.0 0.0.0.255 area 0
 network 192.168.40.0 0.0.0.255 area 0
 
-ip domain-name example.com
-crypto key generate rsa modulus 2048
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.100.218
- key 1
-
-line vty 0 4
- transport input ssh
-line vty 5 15
- transport input ssh
 ```
 
 ## Switch2 (L3S2) [Layer 3]
@@ -523,15 +528,30 @@ clock timezone SGT 8
 
 ip routing
 
+username wendell password odom
 enable password faith
+
+aaa new-model
+aaa authentication login default group tacacs+ local
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key grp7
 
 username manager secret Manager!
 username instructor secret Instructor!
 username staff secret Staff!
 username networkManager secret NetworkManager!
 username networkAdmin secret NetworkAdmin!
-aaa new-model
-aaa authentication login default group tacacs+ local
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+ 
+ip domain-name grp7
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 vrf definition MGMT
  description Management VRF
@@ -620,20 +640,6 @@ router ospf 1
  network 192.168.40.0 0.0.0.255 area 0
  default-information originate
 
-ip domain-name example.com
-crypto key generate rsa modulus 2048
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.100.218
- key 1
-
-line vty 0 4
- transport input ssh
-line vty 5 15
- transport input ssh
-
-
 ```
 ## Switch 3 (L2S3) [Layer 2]
 
@@ -650,14 +656,30 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
+username wendell password odom
 enable password faith
 
-username wendell password 0 odom
 aaa new-model
 aaa authentication login default group tacacs+ local
-aaa authorization exec default group tacacs+ local if-authenticated
-aaa accounting exec default start-stop group tacacs+
 
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key grp7
+
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+ 
+ip domain-name grp7
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 interface FastEthernet0
  no ip address
@@ -692,23 +714,6 @@ interface Vlan100
  no shut
 
 ip default-gateway 192.168.100.241
-ip domain-name example.com
-crypto key generate rsa modulus 2048
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.100.218
- key 1
-
-line con 0
- password hope
-line vty 0 4
- password love
- transport input ssh
-line vty 5 15
- password love
- transport input ssh
-
 
 ```
 
@@ -727,12 +732,30 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
+username wendell password odom
 enable password faith
 
-username wendell password 0 odom
 aaa new-model
-
 aaa authentication login default group tacacs+ local
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key grp7
+
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+ 
+ip domain-name grp7
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 interface range FastEthernet0/1-13
  switchport access vlan 20
@@ -763,22 +786,6 @@ interface Vlan100
  no shut
 
 ip default-gateway 192.168.100.245
-ip domain-name example.com
-crypto key generate rsa modulus 2048
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.100.218
- key 1
-
-line con 0
- password hope
-line vty 0 4
- password love
- transport input ssh
-line vty 5 15
- password love
- transport input ssh
 
 ```
 
@@ -797,12 +804,30 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
+username wendell password odom
 enable password faith
 
-username wendell password 0 odom
 aaa new-model
-
 aaa authentication login default group tacacs+ local
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key grp7
+
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+ 
+ip domain-name grp7
+crypto key generate rsa modulus 2048
+ip ssh version 2
 
 int ran f0/1-12
 switchport mode access
@@ -836,22 +861,6 @@ interface vlan 100
  no shutdown
 
 ip default-gateway 192.168.100.249
-ip domain-name example.com
-crypto key generate rsa modulus 2048
-ip ssh version 2
-
-tacacs server TACACSVR
- address ipv4 192.168.100.218
- key 1
-
-line con 0
- password hope
-line vty 0 4
- password love
- transport input ssh
-line vty 5 15
- password love
- transport input ssh
 
 ```
 
