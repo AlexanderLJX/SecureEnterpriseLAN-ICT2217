@@ -96,6 +96,45 @@ router ospf 1
 
 Host R2
 
+vrf definition Mgmt-intf
+ description Management VRF
+ rd 1:1
+ !
+ address-family ipv4
+ exit-address-family
+
+interface GigabitEthernet0/2
+ description Management Interface
+ vrf forwarding Mgmt-intf
+ ip address 192.168.100.226 255.255.255.252
+ no shutdown
+
+ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.225
+
+username wendell password 0 odom
+
+aaa new-model
+aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local if-authenticated
+aaa accounting exec default start-stop group tacacs+
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
+
+line con 0
+ password hope
+line vty 0 4
+ password love
+ transport input ssh
+line vty 5 15
+ password love
+ transport input ssh
+ 
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
 interface GigabitEthernet0/0
  ip address 192.168.10.6 255.255.255.252
  no shutdown
@@ -112,6 +151,26 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.5
 ## Firewall
 ```
 ! Firewall Configuration (Example using Cisco ASA)
+
+interface Management0/0
+ nameif management
+ security-level 100
+ ip address 192.168.100.222 255.255.255.252
+ no shutdown
+
+route management 192.168.100.0 255.255.255.0 192.168.100.221
+
+username wendell password odom
+
+aaa-server TACACS protocol tacacs+
+aaa-server TACACS (management) host 192.168.100.218
+ key 1
+
+aaa authentication ssh console TACACS LOCAL
+aaa authentication enable console TACACS LOCAL
+aaa authorization exec authentication-server
+
+ssh version 2
 
 interface GigabitEthernet0/0
  nameif outside
@@ -162,7 +221,7 @@ object network dmz_network
 
 object network JUMPHOST
  host 192.168.3.2
- nat (jumphost,outside) static interface service tcp 22 22
+ nat (jumphost,outside) static interface service tcp 22 2222
 
 
 ! Access list to allow traffic from the internal network to the outside
@@ -279,7 +338,7 @@ interface GigabitEthernet1/0/14
  no switchport
  description Connection to R2
  vrf forwarding MGMT
- ip address 192.168.100.224 255.255.255.252
+ ip address 192.168.100.225 255.255.255.252
  no shutdown
 
 interface GigabitEthernet1/0/15
