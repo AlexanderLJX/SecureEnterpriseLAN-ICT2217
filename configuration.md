@@ -229,6 +229,7 @@ object network JUMPHOST
 ! access-list outside_access_in extended permit icmp any host 129.126.164.38
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
 access-list outside_access_in extended permit ip any any
+access-list outside_access_in extended permit udp any any eq 53
 access-group outside_access_in in interface outside
 
 ! Access list for jumphost interface
@@ -453,6 +454,13 @@ vrf definition MGMT
  !
  address-family ipv4
  exit-address-family
+
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ ip address 192.168.100.238 255.255.255.252
+ no shutdown
+
+ip route vrf Mgmt-vrf 0.0.0.0 0.0.0.0 192.168.100.237
 
 interface GigabitEthernet1/0/1
 no switchport
