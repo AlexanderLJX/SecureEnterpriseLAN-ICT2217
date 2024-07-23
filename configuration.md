@@ -665,15 +665,15 @@ line vty 5 15
 ```
 Authentication
 
-aaa authentication login default group tacacs+ group radius local
+aaa authentication login default group tacacs+ local
 
 Authorization
 
-aaa authorization exec default group tacacs+ group radius local
+aaa authorization exec default group tacacs+ local
 
 Accounting
 
-aaa accounting exec default start-stop group tacacs+ group radius
+aaa accounting exec default start-stop group tacacs+
 aaa accounting commands all default start-stop group tacacs+
 
 
