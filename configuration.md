@@ -238,13 +238,17 @@ object network public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
 
-object network public_pool_dmz
- range 129.126.164.35 129.126.164.37
- nat (dmz,outside) dynamic public_pool_dmz
+!object network public_pool_dmz
+! range 129.126.164.35 129.126.164.37
+! nat (dmz,outside) dynamic public_pool_dmz
+!
+!object network dmz_network
+! subnet 192.168.5.0 255.255.255.0
+! nat (dmz,outside) dynamic public_pool_dmz
 
-object network dmz_network
- subnet 192.168.5.0 255.255.255.0
- nat (dmz,outside) dynamic public_pool_dmz
+object network WEB_SERVER
+  host 192.168.5.2
+  nat (dmz,outside) static 129.126.164.38
 
 ! Static NAT for jumphost
 ! object network JUMPHOST_OUTSIDE_NAT
@@ -263,6 +267,7 @@ access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 h
 access-list outside_access_in extended permit ip any any
 access-list outside_access_in extended permit udp any any eq 53
 access-list outside_access_in extended permit udp any any eq 123
+access-list outside_access_in extended permit tcp any any eq 80
 access-group outside_access_in in interface outside
 
 ! Access list for jumphost interface
