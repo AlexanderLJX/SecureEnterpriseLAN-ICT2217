@@ -21,6 +21,8 @@ ntp trusted-key 1
 ntp server vrf Mgmt-intf 0.sg.pool.ntp.org
 ntp source GigabitEthernet0
 
+clock timezone SGT 8
+
 vrf definition Mgmt-intf
  description Management VRF
  rd 1:1
@@ -114,6 +116,8 @@ ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server vrf Mgmt-intf 192.168.100.230 key 1
 
+clock timezone SGT 8
+
 vrf definition Mgmt-intf
  description Management VRF
  rd 1:1
@@ -177,6 +181,8 @@ ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server 192.168.100.230 key 1 source management
+
+clock timezone SGT 8
 
 interface Management0/0
  nameif management
@@ -256,6 +262,7 @@ object network JUMPHOST
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
 access-list outside_access_in extended permit ip any any
 access-list outside_access_in extended permit udp any any eq 53
+access-list outside_access_in extended permit udp any any eq 123
 access-group outside_access_in in interface outside
 
 ! Access list for jumphost interface
@@ -314,6 +321,8 @@ ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server vrf Mgmt-vrf 192.168.100.230 key 1
+
+clock timezone SGT 8
 
 ip routing
 
@@ -510,6 +519,8 @@ ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server vrf Mgmt-vrf 192.168.100.230 key 1
 
+clock timezone SGT 8
+
 ip routing
 
 enable password faith
@@ -637,6 +648,8 @@ ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server 192.168.100.230 key 1 source Vlan100
 
+clock timezone SGT 8
+
 enable password faith
 
 username wendell password 0 odom
@@ -712,6 +725,8 @@ ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server 192.168.100.230 key 1 source Vlan100
 
+clock timezone SGT 8
+
 enable password faith
 
 username wendell password 0 odom
@@ -779,6 +794,8 @@ ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
 ntp server 192.168.100.230 key 1 source Vlan100
+
+clock timezone SGT 8
 
 enable password faith
 
