@@ -294,7 +294,7 @@ interface GigabitEthernet0/0
  ip address 192.168.100.234 255.255.255.252
  no shutdown
 
-ip route vrf MGMT 0.0.0.0 0.0.0.0 192.168.100.233
+ip route vrf Mgmt-vrf 0.0.0.0 0.0.0.0 192.168.100.233
 
 interface GigabitEthernet1/0/1
 no switchport
