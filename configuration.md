@@ -11,6 +11,9 @@ route add 0.0.0.0 mask 0.0.0.0 192.168.3.1 metric 1 if 13
 
 Host R3
 
+logging trap debugging
+logging host 192.168.100.218 vrf Mgmt-intf
+
 ntp master 3
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
@@ -103,6 +106,9 @@ router ospf 1
 
 Host R2
 
+logging trap debugging
+logging host 192.168.100.218 vrf Mgmt-intf
+
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
@@ -163,6 +169,9 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.5
 ## Firewall
 ```
 ! Firewall Configuration (Cisco ASA)
+
+logging trap debugging
+logging host management 192.168.100.218
 
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
@@ -297,6 +306,9 @@ dns server-group DefaultDNS
 ## Switch1 (L3S1) [Layer 3]
 ```
 Host L3S1
+
+logging trap debugging
+logging host 192.168.100.218 vrf Mgmt-vrf
 
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
@@ -490,6 +502,9 @@ line vty 5 15
 ```
 Host L3S2
 
+logging trap debugging
+logging host 192.168.100.218 vrf Mgmt-vrf
+
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
@@ -614,6 +629,9 @@ line vty 5 15
 ```
 hostname L2S3
 
+logging trap debugging
+logging host 192.168.100.218
+
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
@@ -686,6 +704,9 @@ line vty 5 15
 ```
 hostname L2S4
 
+logging trap debugging
+logging host 192.168.100.218
+
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
@@ -750,6 +771,9 @@ line vty 5 15
 
 ```
 Host L2S5
+
+logging trap debugging
+logging host 192.168.100.218
 
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
