@@ -305,6 +305,16 @@ ntp server vrf Mgmt-vrf 192.168.100.230 key 1
 
 ip routing
 
+enable password faith
+
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+aaa new-model
+aaa authentication login default group tacacs+ local
+
 vrf definition MGMT
  description Management VRF
  rd 1:1
@@ -461,6 +471,18 @@ network 192.168.20.0 0.0.0.255 area 0
 network 192.168.30.0 0.0.0.255 area 0
 network 192.168.40.0 0.0.0.255 area 0
 
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
 ```
 
 ## Switch2 (L3S2) [Layer 3]
@@ -474,6 +496,16 @@ ntp trusted-key 1
 ntp server vrf Mgmt-vrf 192.168.100.230 key 1
 
 ip routing
+
+enable password faith
+
+username manager secret Manager!
+username instructor secret Instructor!
+username staff secret Staff!
+username networkManager secret NetworkManager!
+username networkAdmin secret NetworkAdmin!
+aaa new-model
+aaa authentication login default group tacacs+ local
 
 vrf definition MGMT
  description Management VRF
@@ -561,6 +593,19 @@ router ospf 1
  network 192.168.30.0 0.0.0.255 area 0
  network 192.168.40.0 0.0.0.255 area 0
  default-information originate
+
+ip domain-name example.com
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
+tacacs server TACACSVR
+ address ipv4 192.168.100.218
+ key 1
+
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
 
 
 ```
