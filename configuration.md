@@ -11,6 +11,13 @@ route add 0.0.0.0 mask 0.0.0.0 192.168.3.1 metric 1 if 13
 
 Host R3
 
+ntp master 3
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server vrf Mgmt-intf 0.sg.pool.ntp.org
+ntp source GigabitEthernet0
+
 vrf definition Mgmt-intf
  description Management VRF
  rd 1:1
@@ -96,6 +103,11 @@ router ospf 1
 
 Host R2
 
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server vrf Mgmt-intf 192.168.100.230 key 1
+
 vrf definition Mgmt-intf
  description Management VRF
  rd 1:1
@@ -150,7 +162,12 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.5
 
 ## Firewall
 ```
-! Firewall Configuration (Example using Cisco ASA)
+! Firewall Configuration (Cisco ASA)
+
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server 192.168.100.230 key 1 source management
 
 interface Management0/0
  nameif management
@@ -280,6 +297,11 @@ dns server-group DefaultDNS
 ## Switch1 (L3S1) [Layer 3]
 ```
 Host L3S1
+
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server vrf Mgmt-vrf 192.168.100.230 key 1
 
 ip routing
 
@@ -446,6 +468,11 @@ network 192.168.40.0 0.0.0.255 area 0
 ```
 Host L3S2
 
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server vrf Mgmt-vrf 192.168.100.230 key 1
+
 ip routing
 
 vrf definition MGMT
@@ -542,6 +569,11 @@ router ospf 1
 ```
 hostname L2S3
 
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server 192.168.100.230 key 1 source Vlan100
+
 enable password faith
 
 username wendell password 0 odom
@@ -609,6 +641,11 @@ line vty 5 15
 ```
 hostname L2S4
 
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server 192.168.100.230 key 1 source Vlan100
+
 enable password faith
 
 username wendell password 0 odom
@@ -668,6 +705,11 @@ line vty 5 15
 
 ```
 Host L2S5
+
+ntp authenticate
+ntp authentication-key 1 md5 NTPauth123
+ntp trusted-key 1
+ntp server 192.168.100.230 key 1 source Vlan100
 
 enable password faith
 
