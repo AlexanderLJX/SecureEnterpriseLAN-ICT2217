@@ -238,42 +238,22 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.5
 ```
 ! Firewall Configuration (Cisco ASA)
 
-flow record FLOW-RECORD-1
- match ipv4 source address
- match ipv4 destination address
- match ipv4 protocol
- match transport source-port
- match transport destination-port
- collect counter bytes long
- collect counter packets long
-
-flow exporter FLOW-EXPORTER-1
- destination 192.168.3.2
- transport udp 9996
- source G0/3
- export-protocol netflow-v9
-
-flow monitor FLOW-MONITOR-1
- record FLOW-RECORD-1
- exporter FLOW-EXPORTER-1
- cache timeout active 60
- cache timeout inactive 15
+flow-export destination jumphost 192.168.3.2 9996
+flow-export template timeout-rate 1
+flow-export delay flow-create 60
+flow-export active refresh-interval 60
 
 interface GigabitEthernet0/0
- ip flow monitor FLOW-MONITOR-1 input
- ip flow monitor FLOW-MONITOR-1 output
+ flow-export enable
 
 interface GigabitEthernet0/1
- ip flow monitor FLOW-MONITOR-1 input
- ip flow monitor FLOW-MONITOR-1 output
+ flow-export enable
 
 interface GigabitEthernet0/2
- ip flow monitor FLOW-MONITOR-1 input
- ip flow monitor FLOW-MONITOR-1 output
+ flow-export enable
 
 interface GigabitEthernet0/3
- ip flow monitor FLOW-MONITOR-1 input
- ip flow monitor FLOW-MONITOR-1 output
+ flow-export enable
 
 logging trap debugging
 logging host management 192.168.100.218
@@ -334,7 +314,7 @@ object network obj_any
  nat (inside,outside) dynamic interface
 
 object network public_pool_inside
- range 129.126.164.32 129.126.164.37
+ range 129.126.164.32 129.126.164.36
  nat (inside,outside) dynamic public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
@@ -352,9 +332,9 @@ object network WEB_SERVER
   nat (dmz,outside) static 129.126.164.38
 
 ! Static NAT for jumphost
-! object network JUMPHOST_OUTSIDE_NAT
-!  host 192.168.3.2
-!  nat (jumphost,outside) static 129.126.164.38
+object network JUMPHOST_OUTSIDE_NAT
+ host 192.168.3.2
+ nat (jumphost,outside) static 129.126.164.37
 
 object network JUMPHOST
  host 192.168.3.2
@@ -362,8 +342,8 @@ object network JUMPHOST
 
 
 ! Access list to allow traffic from the internal network to the outside
-! access-list outside_access_in extended permit tcp any host 129.126.164.38 eq ssh
-! access-list outside_access_in extended permit icmp any host 129.126.164.38
+access-list outside_access_in extended permit tcp any host 129.126.164.38 eq ssh
+access-list outside_access_in extended permit icmp any host 129.126.164.38
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
 access-list outside_access_in extended permit ip any any
 access-list outside_access_in extended permit udp any any eq 53
