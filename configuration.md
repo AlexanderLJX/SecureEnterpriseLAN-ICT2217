@@ -49,11 +49,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -144,11 +144,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -355,11 +355,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -555,11 +555,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -683,11 +683,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -759,11 +759,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -831,11 +831,11 @@ tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username manager secret Manager!
-username instructor secret Instructor!
-username staff secret Staff!
-username networkManager secret NetworkManager!
-username networkAdmin secret NetworkAdmin!
+username Lmanager secret LManager!
+username Linstructor secret LInstructor!
+username Lstaff secret LStaff!
+username LnetworkManager secret LNetworkManager!
+username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
