@@ -328,11 +328,6 @@ object network JUMPHOST_OUTSIDE_NAT
  host 192.168.3.2
  nat (jumphost,outside) static 129.126.164.37
 
-object network JUMPHOST
- host 192.168.3.2
- nat (jumphost,outside) static interface service tcp 22 2222
-
-
 ! Access list to allow traffic from the internal network to the outside
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
 access-list outside_access_in extended permit udp any any eq 53
