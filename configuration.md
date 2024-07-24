@@ -282,6 +282,7 @@ access-group outside_access_in in interface outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
 access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended permit ip any any
+access-list dmz_access_in extended permit tcp any any eq 80
 access-group dmz_access_in in interface dmz
 !
 access-list out_access_in extended permit udp any host 8.8.8.8 eq 53
@@ -315,6 +316,17 @@ dns domain-lookup outside
 dns server-group DefaultDNS
  name-server 8.8.8.8
  name-server 8.8.4.4
+
+
+! Additional security features
+
+ip verify reverse-path interface outside
+
+threat-detection basic-threat
+threat-detection statistics
+threat-detection statistics host
+threat-detection scanning-threat shun
+
 ```
 
 ## Switch1 (L3S1) [Layer 3]
