@@ -319,14 +319,6 @@ object network public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
 
-!object network public_pool_dmz
-! range 129.126.164.35 129.126.164.37
-! nat (dmz,outside) dynamic public_pool_dmz
-!
-!object network dmz_network
-! subnet 192.168.5.0 255.255.255.0
-! nat (dmz,outside) dynamic public_pool_dmz
-
 object network WEB_SERVER
   host 192.168.5.2
   nat (dmz,outside) static 129.126.164.38
