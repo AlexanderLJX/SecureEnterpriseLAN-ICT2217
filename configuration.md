@@ -11,6 +11,39 @@ route add 0.0.0.0 mask 0.0.0.0 192.168.3.1 metric 1 if 13
 
 Host R3
 
+flow record FLOW-RECORD-1
+ match ipv4 source address
+ match ipv4 destination address
+ match ipv4 protocol
+ match transport source-port
+ match transport destination-port
+ collect counter bytes long
+ collect counter packets long
+
+flow exporter FLOW-EXPORTER-1
+ destination 192.168.3.2
+ transport udp 9996
+ source G0/1/0
+ export-protocol netflow-v9
+
+flow monitor FLOW-MONITOR-1
+ record FLOW-RECORD-1
+ exporter FLOW-EXPORTER-1
+ cache timeout active 60
+ cache timeout inactive 15
+
+interface GigabitEthernet0/0/1
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/1/0
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/0/0
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
 logging trap debugging
 logging host 192.168.100.218 vrf Mgmt-intf
 
@@ -176,6 +209,43 @@ ip route 0.0.0.0 0.0.0.0 192.168.10.5
 ```
 ! Firewall Configuration (Cisco ASA)
 
+flow record FLOW-RECORD-1
+ match ipv4 source address
+ match ipv4 destination address
+ match ipv4 protocol
+ match transport source-port
+ match transport destination-port
+ collect counter bytes long
+ collect counter packets long
+
+flow exporter FLOW-EXPORTER-1
+ destination 192.168.3.2
+ transport udp 9996
+ source G0/3
+ export-protocol netflow-v9
+
+flow monitor FLOW-MONITOR-1
+ record FLOW-RECORD-1
+ exporter FLOW-EXPORTER-1
+ cache timeout active 60
+ cache timeout inactive 15
+
+interface GigabitEthernet0/0
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/1
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/2
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/3
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
 logging trap debugging
 logging host management 192.168.100.218
 
@@ -226,7 +296,7 @@ interface GigabitEthernet0/2
 
 interface GigabitEthernet0/3
  nameif jumphost
- security-level 100
+ security-level 80
  ip address 192.168.3.1 255.255.255.252
  no shutdown
 
@@ -299,6 +369,16 @@ access-group traffic_out in interface outside
 access-group traffic_in in interface inside
 access-group traffic_dmz in interface dmz
 access-group traffic_jumphost in interface jumphost
+
+! Define an access list for NetFlow traffic
+access-list NETFLOW_TRAFFIC extended permit udp 192.168.0.0 255.255.0.0 host 192.168.3.2 eq 9996
+access-list NETFLOW_TRAFFIC extended permit udp 192.168.5.0 255.255.255.0 host 192.168.3.2 eq 9996
+
+! Apply the access list to the inside interface (inbound direction)
+access-group NETFLOW_TRAFFIC in interface inside
+
+! Apply the access list to the dmz interface (inbound direction)
+access-group NETFLOW_TRAFFIC in interface dmz
 
 ! Route to the internal network
 route outside 0.0.0.0 0.0.0.0 172.27.47.18
