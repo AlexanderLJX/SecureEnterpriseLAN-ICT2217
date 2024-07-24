@@ -14,11 +14,12 @@ Host R3
 logging trap debugging
 logging host 192.168.100.218 vrf Mgmt-intf
 
+ip name-server 8.8.8.8
 ntp master 3
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
-ntp server vrf Mgmt-intf 0.sg.pool.ntp.org
+ntp server 0.sg.pool.ntp.org
 ntp source GigabitEthernet0
 
 clock timezone SGT 8
@@ -66,7 +67,6 @@ ip ssh version 2
 ip dhcp pool LAB
  network 192.168.20.0 255.255.255.0
  default-router 192.168.20.10
- dns-server 8.8.8.8
 ip dhcp pool STAFF
  network 192.168.30.0 255.255.255.0
  default-router 192.168.30.10
@@ -235,7 +235,7 @@ object network obj_any
  nat (inside,outside) dynamic interface
 
 object network public_pool_inside
- range 129.126.164.32 129.126.164.34
+ range 129.126.164.32 129.126.164.37
  nat (inside,outside) dynamic public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
