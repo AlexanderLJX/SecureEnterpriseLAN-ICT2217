@@ -346,14 +346,6 @@ object network public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
 
-!object network public_pool_dmz
-! range 129.126.164.35 129.126.164.37
-! nat (dmz,outside) dynamic public_pool_dmz
-!
-!object network dmz_network
-! subnet 192.168.5.0 255.255.255.0
-! nat (dmz,outside) dynamic public_pool_dmz
-
 object network WEB_SERVER
   host 192.168.5.2
   nat (dmz,outside) static 129.126.164.38
@@ -363,37 +355,25 @@ object network JUMPHOST_OUTSIDE_NAT
  host 192.168.3.2
  nat (jumphost,outside) static 129.126.164.37
 
-object network JUMPHOST
- host 192.168.3.2
- nat (jumphost,outside) static interface service tcp 22 2222
-
-
 ! Access list to allow traffic from the internal network to the outside
-access-list outside_access_in extended permit tcp any host 129.126.164.38 eq ssh
-access-list outside_access_in extended permit icmp any host 129.126.164.38
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
-access-list outside_access_in extended permit ip any any
 access-list outside_access_in extended permit udp any any eq 53
 access-list outside_access_in extended permit udp any any eq 123
-access-list outside_access_in extended permit tcp any any eq 80
+access-list outside_access_in extended permit tcp any host 192.168.5.2 eq 80
+access-list outside_access_in extended deny ip any any log
 access-group outside_access_in in interface outside
 
-! Access list for jumphost interface
-! access-list jumphost_access_in extended permit tcp any host 192.168.3.2 eq ssh
-! access-list jumphost_access_in extended permit ip 192.168.3.0 255.255.255.252 any
-! access-list jumphost_access_in extended deny ip any any log
-! access-group jumphost_access_in in interface jumphost
 
 ! Access list to allow traffic from the DMZ to the outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
 access-list dmz_access_in extended deny udp any any eq 53
-access-list dmz_access_in extended permit ip any any
 access-list dmz_access_in extended permit tcp any any eq 80
+access-list dmz_access_in extended deny ip any any log
 access-group dmz_access_in in interface dmz
 !
 access-list out_access_in extended permit udp any host 8.8.8.8 eq 53
 access-list out_access_in extended deny udp any any eq 53
-access-list out_access_in extended permit ip any any
+access-list out_access_in extended deny ip any any log
 access-group out_access_in in interface inside
 
 ! Access list for ping traffic
@@ -1339,84 +1319,4 @@ int range g0/1 - 2
 ip dhcp snooping trust
 ip arp inspection trust
 
-
-
 ```
-
-## AAA
-
-```
-Authentication
-
-aaa authentication login default group tacacs+ local
-
-Authorization
-
-aaa authorization exec default group tacacs+ local
-
-Accounting
-
-aaa accounting exec default start-stop group tacacs+
-aaa accounting commands all default start-stop group tacacs+
-
-
-User - manager
-Support - instructors, staff and admin staff
-JR-Admin - network manager
-Admin - network administrator
-
-local
-username USER privilege 1 secret cisco
-privilege exec level 5 ping
-username SUPPORT privilege 5 secret cisco5
-privilege exec level 10 reload
-username JR-ADMIN privilege 10 secret cisco10
-username ADMIN privilege 15 secret cisco123
-
-parser view SHOWVIEW
-secret cisco
-commands exec include show version
-exit
-
-parser view VERIFYVIEW
-secret cisco5
-commands exec include ping
-exit
-
-parser view RELOADVIEW
-secret cisco10
-commands exec include reload
-exit
-
-parser view CONFIGVIEW
-secret cisco15
-commands exec include configure terminal
-commands configure include interface
-exit
-
-parser view USER superview
-secret cisco
-view SHOWVIEW
-exit
-
-parser view SUPPORT superview
-secret cisco1
-view SHOWVIEW
-view VERIFYVIEW
-exit
-
-parser view JR-ADMIN superview
-secret cisco2
-view SHOWVIEW
-view VERIFYVIEW
-view RELOADVIEW
-exit
-
-parser view ADMIN superview
-secret cisco3
-view SHOWVIEW
-view VERIFYVIEW
-view RELOADVIEW
-view CONFIGVIEW
-exit
-
