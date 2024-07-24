@@ -838,6 +838,26 @@ interface Vlan100
 
 ip default-gateway 192.168.100.241
 
+#ACL
+ip access-list extended ALLOWED_SUBNETS
+ permit ip 192.168.20.0 0.0.0.255 any
+ permit ip 192.168.30.0 0.0.0.255 any
+ permit ip 192.168.40.0 0.0.0.255 any
+ permit ip 192.168.100.0 0.0.0.255 any
+ permit ip 192.168.3.0 0.0.0.255 any
+ permit ip 192.168.5.0 0.0.0.255 any
+ permit ip 192.168.10.0 0.0.0.255 any
+ deny   ip any any
+ip access-list extended BLOCK_INTERNET_VLAN20
+ deny   ip 192.168.10.0 0.0.0.255 any
+ permit ip any any
+int ran g1/0/1-24
+ip access-group ALLOWED_SUBNETS in
+
+int vlan20
+ip access-group BLOCK_INTERNET_VLAN20 out
+
+
 ```
 
 ## Switch 4 (L2S4) [Layer 2]
@@ -909,6 +929,25 @@ interface Vlan100
  no shut
 
 ip default-gateway 192.168.100.245
+
+#ACL
+ip access-list extended ALLOWED_SUBNETS
+ permit ip 192.168.20.0 0.0.0.255 any
+ permit ip 192.168.30.0 0.0.0.255 any
+ permit ip 192.168.40.0 0.0.0.255 any
+ permit ip 192.168.100.0 0.0.0.255 any
+ permit ip 192.168.3.0 0.0.0.255 any
+ permit ip 192.168.5.0 0.0.0.255 any
+ permit ip 192.168.10.0 0.0.0.255 any
+ deny   ip any any
+ip access-list extended BLOCK_INTERNET_VLAN20
+ deny   ip 192.168.10.0 0.0.0.255 any
+ permit ip any any
+int ran g1/0/1-24
+ip access-group ALLOWED_SUBNETS in
+
+int vlan20
+ip access-group BLOCK_INTERNET_VLAN20 out
 
 ```
 
