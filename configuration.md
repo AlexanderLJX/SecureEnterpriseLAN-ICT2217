@@ -533,13 +533,57 @@ network 192.168.40.0 0.0.0.255 area 0
 ```
 Host L3S2
 
+vrf definition NETVRF
+ description Management VRF
+ rd 1:1
+ !
+ address-family ipv4
+ exit-address-family
+
+flow record FLOW-RECORD-1
+ match ipv4 source address
+ match ipv4 destination address
+ match ipv4 protocol
+ match transport source-port
+ match transport destination-port
+ collect counter bytes long
+ collect counter packets long
+
+flow exporter FLOW-EXPORTER-1
+ destination 192.168.100.218 vrf NETVRF
+ transport udp 9996
+ source G1/0/20
+ export-protocol netflow-v9
+
+flow monitor FLOW-MONITOR-1
+ record FLOW-RECORD-1
+ exporter FLOW-EXPORTER-1
+ cache timeout active 60
+ cache timeout inactive 15
+
+interface GigabitEthernet1/0/22
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet1/0/23
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet1/0/24
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet1/0/1
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
 logging trap debugging
-logging host 192.168.100.218 vrf Mgmt-vrf
+logging host 192.168.100.218 vrf NETVRF
 
 ntp authenticate
 ntp authentication-key 1 md5 NTPauth123
 ntp trusted-key 1
-ntp server vrf Mgmt-vrf 192.168.100.230 key 1
+ntp server vrf NETVRF 192.168.100.230 key 1
 
 clock timezone SGT 8
 
@@ -579,17 +623,22 @@ vrf definition MGMT
 
 interface GigabitEthernet0/0
  vrf forwarding Mgmt-vrf
- ip address 192.168.100.238 255.255.255.252
- no shutdown
+ shutdown
 
-ip route vrf Mgmt-vrf 0.0.0.0 0.0.0.0 192.168.100.237
+ip route vrf NETVRF 0.0.0.0 0.0.0.0 192.168.100.237
 
 interface GigabitEthernet1/0/1
 no switchport
 ip address 192.168.10.14 255.255.255.252
 no shutdown
 
-interface range GigabitEthernet1/0/3-20
+interface GigabitEthernet1/0/3
+no switchport
+vrf forwarding NETVRF
+ip address 192.168.100.238 255.255.255.252
+no shutdown
+
+interface range GigabitEthernet1/0/4-20
 shutdown
 
 interface GigabitEthernet1/0/21
