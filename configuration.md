@@ -938,7 +938,7 @@ username wendell password odom
 enable password faith
 
 aaa new-model
-aaa authentication login default group tacacs+ local
+aaa authentication login default group TACACSVR local
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
