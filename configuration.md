@@ -858,7 +858,7 @@ int vlan20
 ip access-group BLOCK_INTERNET_VLAN20 out
 
 
-```
+#DHCP Snooping
 ip dhcp snooping
 ip dhcp snooping vlan 20
 int range g1/0/1 - 22 
@@ -867,6 +867,13 @@ int range g1/0/23 - 24
 ip dhcp snooping trust
 show ip dhcp snooping
 
+#Dynamic ARP inspection (DAI)
+int range g1/023 - 24
+ip arp inspection trust
+show ip arp inspection interfaces
+
+
+```
 
 ## Switch 4 (L2S4) [Layer 2]
 
