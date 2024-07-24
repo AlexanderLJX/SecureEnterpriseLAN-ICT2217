@@ -336,11 +336,6 @@ access-list outside_access_in extended permit tcp any host 192.168.5.2 eq 80
 access-list outside_access_in extended deny ip any any log
 access-group outside_access_in in interface outside
 
-! Access list for jumphost interface
-! access-list jumphost_access_in extended permit tcp any host 192.168.3.2 eq ssh
-! access-list jumphost_access_in extended permit ip 192.168.3.0 255.255.255.252 any
-! access-list jumphost_access_in extended deny ip any any log
-! access-group jumphost_access_in in interface jumphost
 
 ! Access list to allow traffic from the DMZ to the outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
