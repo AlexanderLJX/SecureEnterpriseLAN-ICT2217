@@ -859,6 +859,14 @@ ip access-group BLOCK_INTERNET_VLAN20 out
 
 
 ```
+ip dhcp snooping
+ip dhcp snooping vlan 20
+int range g1/0/1 - 22 
+ip dhcp snooping limit rate 3
+int range g1/0/23 - 24
+ip dhcp snooping trust
+show ip dhcp snooping
+
 
 ## Switch 4 (L2S4) [Layer 2]
 
