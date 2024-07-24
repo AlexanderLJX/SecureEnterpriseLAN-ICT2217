@@ -733,6 +733,12 @@ interface Vlan100
 ip default-gateway 192.168.100.241
 
 ```
+int range g1/0/1 - 24
+ip flow ingress
+ip flow egress
+ip flow-export destination 192.168.100.218
+ip flow-export version 9
+
 
 ## Switch 4 (L2S4) [Layer 2]
 
