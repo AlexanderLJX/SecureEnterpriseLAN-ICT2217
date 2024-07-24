@@ -379,6 +379,15 @@ access-group traffic_in in interface inside
 access-group traffic_dmz in interface dmz
 access-group traffic_jumphost in interface jumphost
 
+access-list INSIDE_OUT extended deny ip 192.168.20.0 255.255.255.0 any
+access-list INSIDE_OUT extended permit ip any any
+access-group INSIDE_OUT out interface inside
+
+access-list OUTSIDE_IN extended permit tcp any any established
+access-list OUTSIDE_IN extended permit udp any any eq 53
+access-list OUTSIDE_IN extended permit icmp any any echo-reply
+access-group OUTSIDE_IN in interface outside
+
 ! Define an access list for NetFlow traffic
 access-list NETFLOW_TRAFFIC extended permit udp 192.168.0.0 255.255.0.0 host 192.168.3.2 eq 9996
 access-list NETFLOW_TRAFFIC extended permit udp 192.168.5.0 255.255.255.0 host 192.168.3.2 eq 9996
@@ -416,6 +425,63 @@ threat-detection statistics
 threat-detection statistics host
 threat-detection scanning-threat shun
 
+! SYN flood protection
+tcp-map TCP_MAP
+ tcp-options range 6 7 allow
+ tcp-options range 9 18 allow
+ tcp-options range 20 255 allow
+ urgent-flag allow
+ syn-data allow
+ seq-past-window allow
+policy-map GLOBAL_POLICY
+ class TCP_CLASS
+  set connection advanced-options TCP_MAP
+
+! botnet traffic filter
+dynamic-filter enable
+dynamic-filter use-database
+
+! packet capture for troubleshooting
+capture TRAFFIC interface inside match ip any any
+capture TRAFFIC interface outside match ip any any
+
+! Implement timeouts for idle connections
+timeout conn 1:00:00 half-closed 0:10:00 udp 0:02:00 icmp 0:00:02
+timeout sunrpc 0:10:00 h323 0:05:00 h225 1:00:00 mgcp 0:05:00 mgcp-pat 0:05:00
+timeout sip 0:30:00 sip_media 0:02:00 sip-invite 0:03:00 sip-disconnect 0:02:00
+timeout uauth 0:05:00 absolute
+
+!Enable logging
+logging enable
+logging timestamp
+logging buffer-size 1048576
+logging console warnings
+logging monitor warnings
+logging trap informational
+logging asdm informational
+logging facility 22
+logging host management 192.168.100.218
+
+! Implement MPF (Modular Policy Framework) for inspection
+class-map INSPECT_CLASS
+ match default-inspection-traffic
+policy-map GLOBAL_POLICY
+ class INSPECT_CLASS
+  inspect dns
+  inspect ftp
+  inspect h323 h225
+  inspect h323 ras
+  inspect rsh
+  inspect rtsp
+  inspect sqlnet
+  inspect skinny
+  inspect sunrpc
+  inspect xdmcp
+  inspect sip
+  inspect netbios
+  inspect tftp
+  inspect ip-options
+
 ```
 
 ## Switch1 (L3S1) [Layer 3]
@@ -424,7 +490,7 @@ Host L3S1
 
 vrf definition NETVRF
  description Management VRF
- rd 1:1
+ rd 1:2
  !
  address-family ipv4
  exit-address-family
@@ -677,7 +743,7 @@ Host L3S2
 
 vrf definition NETVRF
  description Management VRF
- rd 1:1
+ rd 1:2
  !
  address-family ipv4
  exit-address-family
