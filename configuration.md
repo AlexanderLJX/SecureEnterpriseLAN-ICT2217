@@ -142,6 +142,35 @@ router ospf 1
 
 Host R2
 
+flow record FLOW-RECORD-1
+ match ipv4 source address
+ match ipv4 destination address
+ match ipv4 protocol
+ match transport source-port
+ match transport destination-port
+ collect counter bytes long
+ collect counter packets long
+
+flow exporter FLOW-EXPORTER-1
+ destination 192.168.3.2
+ transport udp 9996
+ source G0/0
+ export-protocol netflow-v9
+
+flow monitor FLOW-MONITOR-1
+ record FLOW-RECORD-1
+ exporter FLOW-EXPORTER-1
+ cache timeout active 60
+ cache timeout inactive 15
+
+interface GigabitEthernet0/0
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
+interface GigabitEthernet0/1
+ ip flow monitor FLOW-MONITOR-1 input
+ ip flow monitor FLOW-MONITOR-1 output
+
 logging trap debugging
 logging host 192.168.100.218 vrf Mgmt-intf
 
@@ -430,7 +459,7 @@ flow record FLOW-RECORD-1
  collect counter packets long
 
 flow exporter FLOW-EXPORTER-1
- destination 192.168.100.218 vrf NETVRF
+ destination 192.168.100.254 vrf NETVRF
  transport udp 9996
  source G1/0/3
  export-protocol netflow-v9
@@ -683,7 +712,7 @@ flow record FLOW-RECORD-1
  collect counter packets long
 
 flow exporter FLOW-EXPORTER-1
- destination 192.168.100.218 vrf NETVRF
+ destination 192.168.100.254 vrf NETVRF
  transport udp 9996
  source G1/0/3
  export-protocol netflow-v9
