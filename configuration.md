@@ -865,12 +865,11 @@ int range g1/0/1 - 22
 ip dhcp snooping limit rate 3
 int range g1/0/23 - 24
 ip dhcp snooping trust
-show ip dhcp snooping
 
 #Dynamic ARP inspection (DAI)
 int range g1/023 - 24
 ip arp inspection trust
-show ip arp inspection interfaces
+
 
 
 ```
@@ -972,10 +971,8 @@ int range fa0/1 - 23
 ip dhcp snooping limit rate 3
 int range g0/1 - 2
 ip dhcp snooping trust
-ip dhcp arp inspection trust
+ip arp inspection trust
 
-show ip dhcp snooping
-show ip arp inspection interfaces
 
 
 ```
@@ -1052,6 +1049,23 @@ interface vlan 100
  no shutdown
 
 ip default-gateway 192.168.100.249
+
+#DHCP snooping and DAI
+ip dhcp snooping
+ip dhcp snooping vlan 30
+int range fa0/1 - 12
+ip dhcp snooping limit rate 3
+
+ip dhcp snooping
+ip dhcp snooping vlan 40
+int range fa0/13 - 23
+ip dhcp snooping limit rate 3
+
+int range g0/1 - 2
+ip dhcp snooping trust
+ip arp inspection trust
+
+
 
 ```
 
