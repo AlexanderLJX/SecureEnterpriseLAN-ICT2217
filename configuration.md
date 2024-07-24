@@ -964,6 +964,20 @@ ip access-group ALLOWED_SUBNETS in
 int vlan20
 ip access-group BLOCK_INTERNET_VLAN20 out
 
+
+#DHCP Snooping and DAI
+ip dhcp snooping
+ip dhcp snooping vlan 20
+int range fa0/1 - 23
+ip dhcp snooping limit rate 3
+int range g0/1 - 2
+ip dhcp snooping trust
+ip dhcp arp inspection trust
+
+show ip dhcp snooping
+show ip arp inspection interfaces
+
+
 ```
 
 ## Switch 5 (L2S5) [Layer 2]
