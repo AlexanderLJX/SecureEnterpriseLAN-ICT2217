@@ -72,21 +72,32 @@ interface GigabitEthernet0
 
 ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.229
 
-username wendell password odom
-enable password faith
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
+
+
 
 aaa new-model
-aaa authentication login default group tacacs+ local
+
+aaa authentication login default group TACACSVR local
+aaa authorization exec default group TACACSVR local
+aaa accounting exec default start-stop group TACACSVR
+aaa accounting commands 15 default stop-only group TACACSVR
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
+
+aaa group server tacacs+ TACACSVR
+ server-private 192.168.100.218 key grp7
+ ip vrf forwarding Mgmt-intf
+ ip tacacs source-interface GigabitEthernet0
+
 
 line vty 0 4
  transport input ssh
@@ -196,11 +207,26 @@ interface GigabitEthernet0/2
 
 ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 192.168.100.225
 
-username wendell password odom
-enable password faith
+
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
 
 aaa new-model
-aaa authentication login default group tacacs+ local
+
+aaa authentication login default group TACACSVR local
+aaa authorization exec default group TACACSVR local
+aaa accounting exec default start-stop group TACACSVR
+aaa accounting commands 15 default stop-only group TACACSVR
+
+
+aaa group server tacacs+ TACACSVR
+ server-private 192.168.100.218 key grp7
+ ip vrf forwarding Mgmt-intf
+ ip tacacs source-interface GigabitEthernet0
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
@@ -273,15 +299,16 @@ interface Management0/0
 
 route management 192.168.100.0 255.255.255.0 192.168.100.221
 
-username wendell password odom
+username Lmanager password LManager!! privilege 1 
+username Lstaff password LStaff!! privilege 5
+username Lnmanager password LNetworkManager!! privilege 10
+username Ladmin password LAdmin!! privilege 15
 
 aaa-server TACACS protocol tacacs+
 aaa-server TACACS (management) host 192.168.100.218
  key 1
 
 aaa authentication ssh console TACACS LOCAL
-aaa authentication enable console TACACS LOCAL
-aaa authorization exec authentication-server
 
 ssh version 2
 
@@ -495,6 +522,24 @@ vrf definition NETVRF
  address-family ipv4
  exit-address-family
 
+
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
+
+aaa group server tacacs+ TACACSVR
+ server-private 192.168.100.218 key grp7
+ ip vrf forwarding NETVRF
+ ip tacacs source-interface GigabitEthernet1/0/3
+!
+aaa authentication login default group TACACSVR local
+aaa authorization exec default group TACACSVR local
+aaa accounting exec default start-stop group TACACSVR
+aaa accounting commands 15 default stop-only group TACACSVR
+
 flow record FLOW-RECORD-1
  match ipv4 source address
  match ipv4 destination address
@@ -548,21 +593,11 @@ clock timezone SGT 8
 
 ip routing
 
-username wendell password odom
-enable password faith
-
-aaa new-model
-aaa authentication login default group tacacs+ local
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
 
 line vty 0 4
  transport input ssh
@@ -733,6 +768,27 @@ network 192.168.10.8 0.0.0.3 area 0
 network 192.168.20.0 0.0.0.255 area 0
 network 192.168.30.0 0.0.0.255 area 0
 network 192.168.40.0 0.0.0.255 area 0
+default-information originate
+
+privilege exec level 5 ping
+privilege exec level 10 enable
+privilege exec level 15 configure terminal
+privilege exec level 15 configure
+privilege exec level 10 reload
+privilege exec level 15 show running-config
+privilege exec level 1 show
+
+line con 0
+ password team
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ password seven
+ transport input ssh
+line vty 5 15
+ password seven
+ transport input ssh
 
 ```
 
@@ -801,25 +857,35 @@ clock timezone SGT 8
 
 ip routing
 
-username wendell password odom
-enable password faith
+
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
 
 aaa new-model
-aaa authentication login default group tacacs+ local
+
+aaa authentication login default group TACACSVR local
+aaa authorization exec default group TACACSVR local
+aaa accounting exec default start-stop group TACACSVR
+aaa accounting commands 15 default stop-only group TACACSVR
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
-
+line con 0
+ password team
+ stopbits 1
+line aux 0
+ stopbits 1
 line vty 0 4
+ password seven
  transport input ssh
 line vty 5 15
+ password seven
  transport input ssh
  
 ip domain-name grp7
@@ -934,26 +1000,43 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
-username wendell password odom
-enable password faith
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
 
 aaa new-model
+
 aaa authentication login default group TACACSVR local
+aaa authorization exec default group TACACSVR local
+aaa accounting exec default start-stop group TACACSVR
+aaa accounting commands 15 default stop-only group TACACSVR
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
-
+ line con 0
+ password team
+ stopbits 1
+line aux 0
+ stopbits 1
 line vty 0 4
+ password seven
  transport input ssh
 line vty 5 15
+ password seven
  transport input ssh
+
+privilege exec level 5 ping
+privilege exec level 10 enable
+privilege exec level 15 configure terminal
+privilege exec level 15 configure
+privilege exec level 10 reload
+privilege exec level 15 show running-config
+privilege exec level 1 show
  
 ip domain-name grp7
 crypto key generate rsa modulus 2048
@@ -1044,27 +1127,45 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
-username wendell password odom
-enable password faith
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
 
 aaa new-model
+
 aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default stop-only group tacacs+
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
 
+privilege exec level 5 ping
+privilege exec level 10 enable
+privilege exec level 15 configure terminal
+privilege exec level 15 configure
+privilege exec level 10 reload
+privilege exec level 15 show running-config
+privilege exec level 1 show
+
+line con 0
+ password team
+ stopbits 1
+line aux 0
+ stopbits 1
 line vty 0 4
+ password seven
  transport input ssh
 line vty 5 15
+ password seven
  transport input ssh
- 
+
 ip domain-name grp7
 crypto key generate rsa modulus 2048
 ip ssh version 2
@@ -1147,25 +1248,43 @@ ntp server 192.168.100.230 key 1 source Vlan100
 
 clock timezone SGT 8
 
-username wendell password odom
-enable password faith
+enable secret faith
+
+username Lmanager privilege 1 secret LManager!!
+username Lstaff privilege 5 secret LStaff!!
+username Lnmanager privilege 10 secret LNetworkManager!!
+username Ladmin privilege 15 secret LAdmin!!
 
 aaa new-model
+
 aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 15 default stop-only group tacacs+
 
 tacacs server TACACSVR
  address ipv4 192.168.100.218
  key grp7
 
-username Lmanager secret LManager!
-username Linstructor secret LInstructor!
-username Lstaff secret LStaff!
-username LnetworkManager secret LNetworkManager!
-username Ladmin secret LAdmin!
+ 
+privilege exec level 5 ping
+privilege exec level 10 enable
+privilege exec level 15 configure terminal
+privilege exec level 15 configure
+privilege exec level 10 reload
+privilege exec level 15 show running-config
+privilege exec level 1 show
 
+line con 0
+ password team
+ stopbits 1
+line aux 0
+ stopbits 1
 line vty 0 4
+ password seven
  transport input ssh
 line vty 5 15
+ password seven
  transport input ssh
  
 ip domain-name grp7
