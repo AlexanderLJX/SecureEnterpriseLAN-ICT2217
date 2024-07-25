@@ -341,7 +341,7 @@ object network obj_any
  nat (inside,outside) dynamic interface
 
 object network public_pool_inside
- range 129.126.164.32 129.126.164.36
+ range 129.126.164.32 129.126.164.35
  nat (inside,outside) dynamic public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
@@ -353,7 +353,7 @@ object network WEB_SERVER
 ! Static NAT for jumphost
 object network JUMPHOST_OUTSIDE_NAT
  host 192.168.3.2
- nat (jumphost,outside) static 129.126.164.37
+ nat (jumphost,outside) static 129.126.164.36
 
 ! Access list to allow traffic from the internal network to the outside
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
@@ -361,6 +361,7 @@ access-list outside_access_in extended permit udp any any eq 53
 access-list outside_access_in extended permit udp any any eq 123
 access-list outside_access_in extended permit tcp any host 192.168.5.2 eq 80
 access-list outside_access_in extended permit icmp any host 192.168.5.2 echo
+access-list outside_access_in extended permit icmp any host 192.168.3.2 echo
 access-list outside_access_in extended deny ip any any log
 access-group outside_access_in in interface outside
 
@@ -392,6 +393,10 @@ access-list traffic_out permit icmp any any
 access-list traffic_in permit icmp any any
 access-list traffic_dmz permit icmp any any
 access-list traffic_jumphost permit icmp any any
+access-list traffic_jumphost extended permit icmp any any echo-reply
+access-list traffic_jumphost extended permit udp host 192.168.3.2 any eq 53
+access-list traffic_jumphost extended permit tcp host 192.168.3.2 any eq 443
+access-list traffic_jumphost extended permit udp host 192.168.3.2 any eq 443
 access-group traffic_out in interface outside
 access-group traffic_in in interface inside
 access-group traffic_dmz in interface dmz
