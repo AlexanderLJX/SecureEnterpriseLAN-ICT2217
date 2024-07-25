@@ -360,6 +360,7 @@ access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 h
 access-list outside_access_in extended permit udp any any eq 53
 access-list outside_access_in extended permit udp any any eq 123
 access-list outside_access_in extended permit tcp any host 192.168.5.2 eq 80
+access-list outside_access_in extended permit icmp any host 192.168.5.2 echo
 access-list outside_access_in extended deny ip any any log
 access-group outside_access_in in interface outside
 
@@ -368,10 +369,18 @@ access-group outside_access_in in interface outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
 access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended permit tcp any any eq 80
+access-list dmz_access_in extended permit icmp any any echo-reply
 access-list dmz_access_in extended deny ip any any log
 access-group dmz_access_in in interface dmz
 !
 access-list out_access_in extended permit udp any host 8.8.8.8 eq 53
+access-list out_access_in extended permit tcp any host 192.168.5.2 eq 80
+access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 host 192.168.3.2 eq 22
+access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 53
+access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 53
+access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 80
+access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 80
+access-list out_access_in extended permit icmp any host 192.168.5.2 echo
 access-list out_access_in extended deny udp any any eq 53
 access-list out_access_in extended deny ip any any log
 access-group out_access_in in interface inside
