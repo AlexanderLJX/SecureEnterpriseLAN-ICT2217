@@ -1,3 +1,61 @@
+
+! outside ssh to jumphost
+packet-tracer input outside tcp 10.0.50.50 1234 129.126.164.37 ssh
+
+! vlan 40 ssh to jumphost
+packet-tracer input inside tcp 192.168.40.23 1234 192.168.3.2 ssh
+
+! inside access web server
+packet-tracer input inside tcp 192.168.20.23 1234 192.168.5.2 80
+
+! inside vlan 20 access google dns
+packet-tracer input inside tcp 192.168.20.23 1234 8.8.8.8 53
+
+! inside vlan 40 access google dns
+packet-tracer input inside icmp 192.168.30.11 0 0 8.8.8.8
+
+! inside vlan 20 access google web
+packet-tracer input inside tcp 192.168.30.11 1234 8.8.8.8 80
+
+! inside vlan 40 access google web
+packet-tracer input outside tcp 172.27.47.18 1234 192.168.30.11 443
+
+! inside vlan 30 access google web
+packet-tracer input inside tcp 192.168.30.23 1234 8.8.8.8 80
+
+! outside access web on inside
+packet-tracer input outside tcp 172.30.209.189 1234 192.168.40.234 80
+
+! outside ping inside vlan 40
+packet-tracer input outside icmp 172.30.209.189 0 0 192.168.40.234
+
+! outside ping web server
+packet-tracer input outside icmp 172.30.209.189 0 0 129.126.164.38 detail
+
+! ssh in from outside
+packet-tracer input outside tcp 172.30.144.18 1234 129.126.164.37 22
+
+! ssh in from inside
+packet-tracer input inside tcp 192.168.40.234 1234 192.168.3.2 22
+
+! vlan 20 ping web server
+packet-tracer input outside icmp 192.168.30.234 0 0 192.168.5.2
+
+! cflow from R3 to jmphost
+packet-tracer input inside udp 192.168.10.2 1234 192.168.3.2 9996
+
+! cflow from R2 to jmphost
+packet-tracer input dmz udp 192.168.10.6 1234 192.168.3.2 9996
+
+! jumphost ping google
+packet-tracer input jumphost icmp 192.168.3.2 0 0 8.8.8.8
+
+! jumphost ping web
+packet-tracer input jumphost icmp 192.168.3.2 0 0 192.168.5.2
+
+! R3 get dns
+packet-tracer input inside udp 192.168.10.2 1234 8.8.8.8 53
+
 ## JumpHost
 ```
 route add 192.168.100.0 mask 255.255.255.0 192.168.100.253 metric 1 if 49
@@ -337,23 +395,23 @@ interface GigabitEthernet0/3
  no shutdown
 
 object network obj_any
- subnet 192.168.0.0 255.255.0.0
+ subnet 192.168.0.0 255.255.255.0
  nat (inside,outside) dynamic interface
 
 object network public_pool_inside
- range 129.126.164.32 129.126.164.35
+ range 129.126.164.32 129.126.164.36
  nat (inside,outside) dynamic public_pool_inside
 
 nat (inside,outside) source dynamic obj_any public_pool_inside
 
-object network WEB_SERVER
-  host 192.168.5.2
-  nat (dmz,outside) static 129.126.164.38
+object network TEST_NAT
+  host 192.168.30.11
+  nat (dmz,outside) static 129.126.164.32
 
 ! Static NAT for jumphost
 object network JUMPHOST_OUTSIDE_NAT
  host 192.168.3.2
- nat (jumphost,outside) static 129.126.164.36
+ nat (jumphost,outside) static 129.126.164.37
 
 ! Access list to allow traffic from the internal network to the outside
 access-list outside_access_in extended permit tcp 172.27.47.16 255.255.255.252 host 192.168.3.2 eq ssh
@@ -382,8 +440,13 @@ access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 
 access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 53
 access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 80
 access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 80
+access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 443
+access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 443
 access-list out_access_in extended permit icmp any host 192.168.5.2 echo
 access-list out_access_in extended permit udp host 192.168.10.2 host 192.168.3.2 eq 9996
+access-list out_access_in extended permit udp 192.168.0.0 255.255.0.0 any eq ntp
+access-list out_access_in extended permit icmp any any echo
+access-list out_access_in extended permit icmp any any
 access-list out_access_in extended deny udp any any eq 53
 access-list out_access_in extended deny ip any any log
 access-group out_access_in in interface inside
