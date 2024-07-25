@@ -367,9 +367,10 @@ access-group outside_access_in in interface outside
 
 ! Access list to allow traffic from the DMZ to the outside
 access-list dmz_access_in extended permit udp any host 8.8.8.8 eq 53
-access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended permit tcp any any eq 80
 access-list dmz_access_in extended permit icmp any any echo-reply
+access-list dmz_access_in extended permit udp host 192.168.10.6 host 192.168.3.2 eq 9996
+access-list dmz_access_in extended deny udp any any eq 53
 access-list dmz_access_in extended deny ip any any log
 access-group dmz_access_in in interface dmz
 !
@@ -381,6 +382,7 @@ access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 
 access-list out_access_in extended permit tcp 192.168.30.0 255.255.255.0 any eq 80
 access-list out_access_in extended permit tcp 192.168.40.0 255.255.255.0 any eq 80
 access-list out_access_in extended permit icmp any host 192.168.5.2 echo
+access-list out_access_in extended permit udp host 192.168.10.2 host 192.168.3.2 eq 9996
 access-list out_access_in extended deny udp any any eq 53
 access-list out_access_in extended deny ip any any log
 access-group out_access_in in interface inside
